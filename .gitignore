@@ -1,3 +1,6 @@
+# dependent project
+ptt-web-crawler/
+
 # Project stuff
 entrance/settings_database.py
 uwsgi.deploy.ini
