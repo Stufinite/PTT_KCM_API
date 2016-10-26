@@ -5,7 +5,7 @@ from django.http import JsonResponse
 import json, re
 
 def ip(request):
-	p = pttJson('PTT_factory/api/ptt.json')
+	p = pttJson('PTT_KCM_API/api/ptt.json')
 	return JsonResponse(p.getWithIssue(p.get_pttJson(),'光復節'), safe=False)
 
 class pttJson(object):
