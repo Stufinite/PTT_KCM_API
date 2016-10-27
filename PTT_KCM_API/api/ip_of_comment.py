@@ -12,7 +12,7 @@ class pttJson(object):
     Returns:
 		ptt articles with specific issue.
     """
-	def __init__(self, filePath='PTT_KCM_API/api/ptt.json'):
+	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json'):
 		self.filePath = filePath
 		self.articleLists = []
 		self.json = self._get_pttJson()
