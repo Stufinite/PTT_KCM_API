@@ -36,7 +36,7 @@ class pttJson(object):
 			userObj, created = IpTable.objects.get_or_create(
 			    userID = i['author'],
 			    defaults={ 
-			    	'userID' : i['author'],
+			    	'userID' : i['author'].split(' ')[0],
 			    	'mostFreqCity' : ""
 			    }
 			)

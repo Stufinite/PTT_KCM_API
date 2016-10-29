@@ -93,4 +93,4 @@ def get_IpofUser(userID):
 	else:
 		ipt = ipt[0]
 		ipList = ipt.ipList.all()
-		return ipList[0]
+		return ipList[0].ip
