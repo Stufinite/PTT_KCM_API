@@ -17,6 +17,7 @@ These instructions will get you a copy of the project up and running on your loc
 3. 使用虛擬環境去安裝本套件 ( recommended ) ：`pip install virtualenv`
   * 建立虛擬環境，取名叫作venv：`virtualenv venv`
   *  啟動虛擬環境，這樣套件就會裝在目錄底下的venv資料夾：`. venv/bin/activate`
+
 ### Installing
 
 ```
@@ -48,7 +49,7 @@ make install
 
 目前沒有coding style tests...
 
-### Results
+### API usage and Results
 
 API使用方式（下面所寫的是api的URL pattern）：
 
