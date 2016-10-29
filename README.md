@@ -32,8 +32,8 @@ make install
 
 1. 初次啟動需要先爬PTT資料：`make firstRunCrawler`
 2. 啟動django專案：`./manage.py runserver`
-3. 開啟瀏覽器，輸入： `127.0.0.1:8000/PTT_KCM_API/api/ip/?issue={想要查詢的關鍵字}`
-4. EX：[連結](http://127.0.0.1:8000/PTT_KCM_API/api/ip/?issue=光復節)
+3. 開啟瀏覽器，輸入： `http://127.0.0.1:8000/PTT_KCM_API/api/articles/?issue={想要查詢的關鍵字}`
+4. EX：[連結](http://127.0.0.1:8000/PTT_KCM_API/api/articles/?issue=光復節)
 
 ### Break down into end to end tests
 

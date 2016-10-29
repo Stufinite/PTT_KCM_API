@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render_to_response, render
 from django.utils import timezone # auto generate create time.
 from django.http import JsonResponse, Http404
 from functools import wraps
+from PTT_KCM_API.models import IpTable, IP
 import json, re
 
 class pttJson(object):
@@ -30,6 +31,25 @@ class pttJson(object):
 			if issue in i['article_title'] or issue in i['content']:
 				self.articleLists.append(i)
 
+	def build_IpTable(self):
+		for i in self.json['articles']:
+			userObj, created = IpTable.objects.get_or_create(
+			    userID = i['author'],
+			    defaults={ 
+			    	'userID' : i['author'],
+			    	'mostFreqCity' : ""
+			    }
+			)
+
+			ipObj, created = IP.objects.get_or_create(
+				ip = i['ip'],
+				defaults = {
+					'ip' : i['ip'],
+					'city' : ""
+				}
+			)
+			userObj.ipList.add(ipObj)
+
 def queryString_required(str):
 	"""	An decorator checking whether queryString key is valid or not
     Args:
@@ -48,7 +68,7 @@ def queryString_required(str):
 	return _dec
 
 @queryString_required('issue')
-def ip(request):
+def articles(request):
 	"""Generate list of term data source files
     Returns:
         if contains invalid queryString key, it will raise exception.
