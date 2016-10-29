@@ -3,6 +3,7 @@ from django.urls import reverse
 from PTT_KCM_API.api.articles import queryString_required
 from functools import wraps
 import json, requests, urllib
+from PTT_KCM_API.models import IpTable
 
 @queryString_required('issue')
 def ip(request):
@@ -43,19 +44,28 @@ def ip(request):
 	jsonText = requests.get('http://' + apiURL)
 
 	jsonText = json.loads(jsonText.text)
-	result = dict(issue=issue, attendee=[], author=[])
-	result['author'] = [ dict(author=i['author'], ip=i['ip'], date=i['date'], score=0) for i in jsonText ]
+	result = dict(
+		issue=issue, 
+		attendee=[], 
+		author=[]
+	)
+	result['author'] = [ dict(
+		author=i['author'], 
+		ip=i['ip'], 
+		date=i['date'], 
+		score=get_score(i, i['article_title'])) for i in jsonText 
+	]
 	for i in jsonText:
 		for j in i['messages']:
 			result['attendee'].append( dict(
-					ip=None, 
+					ip=get_IpofUser(j['push_userid']), 
 					push_ipdatetime=j['push_ipdatetime'], 
 					push_userid=j['push_userid'], 
-					score=get_score(j['push_tag'])) 
+					score=get_score(j ,j['push_tag'])) 
 			)
 	return JsonResponse(result, safe=False)
 
-def get_score(text):
+def get_score(obj, text):
 	'''Return the score of attitude toward a specific issue.
 
 	IF block: return score of comment.
@@ -71,5 +81,16 @@ def get_score(text):
 		elif text == "推":
 			return 1
 	else:
-		return 0
+		try:
+			return obj['message_conut']['count']/(obj['message_conut']['push'] + obj['message_conut']['boo'])
+		except Exception as e:
+			return 0
 
+def get_IpofUser(userID):
+	ipt = IpTable.objects.filter(userID=userID)
+	if len(ipt) == 0:
+		return None
+	else:
+		ipt = ipt[0]
+		ipList = ipt.ipList.all()
+		return ipList[0]
