@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from PTT_KCM_API.api.articles import articles, pttJson
 from PTT_KCM_API.api.ip import ip
 from PTT_KCM_API.api.locations import locations
-import json
+from PTT_KCM_API.api.pttJson import pttJson
 # Create your views here.
 
 def build_IpTable(request):
