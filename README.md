@@ -1,10 +1,10 @@
-# PTT_KCM_API (ä½¿ç”¨KCMç•¶ä½œPTTæ–‡ç« æŸ¥è©¢ç´¢å¼•çš„API)[![Build Status](https://travis-ci.org/UDICatNCHU/PTT_KCM_API.svg?branch=master)](https://travis-ci.org/UDICatNCHU/PTT_KCM_API)
+# PTT_KCM_API (Ê¹ÓÃKCM®”×÷PTTÎÄÕÂ²éÔƒË÷ÒıµÄAPI)[![Build Status](https://travis-ci.org/UDICatNCHU/PTT_KCM_API.svg?branch=master)](https://travis-ci.org/UDICatNCHU/PTT_KCM_API)
 
-ä½¿ç”¨ **jwline** å¯¦ä½œçš„[PTTçˆ¬èŸ²](https://github.com/jwlin/ptt-web-crawler)
+Ê¹ÓÃ **jwline** Œ×÷µÄ[PTTÅÀÏx](https://github.com/jwlin/ptt-web-crawler)
 
-å¯¦ä½œåˆä¸€å€‹å¯ä»¥ç”¨getå”å®šå»æŸ¥è©¢çš„APIï¼Œè‹¥é—œéµå­—ä¸å­˜åœ¨
+Œ×÷³õÒ»‚€¿ÉÒÔÓÃget…f¶¨È¥²éÔƒµÄAPI£¬ÈôêPæI×Ö²»´æÔÚ
 
-å‰‡ä½¿ç”¨KCMæ‰¾å‡ºæœ€ç›¸é—œçš„å­—å»åšæŸ¥è©¢
+„tÊ¹ÓÃKCMÕÒ³ö×îÏàêPµÄ×ÖÈ¥×ö²éÔƒ
 
 ## Getting Started
 
@@ -12,15 +12,15 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisities
 
-1. OSï¼šUbuntu / OSX would be nice
-2. environmentï¼šneed python3 `sudo apt-get update; sudo apt-get install; python3 python3-dev`
-3. ä½¿ç”¨è™›æ“¬ç’°å¢ƒå»å®‰è£æœ¬å¥—ä»¶ ( recommended ) ï¼š`pip install virtualenv`
-  * å»ºç«‹è™›æ“¬ç’°å¢ƒï¼Œå–åå«ä½œvenvï¼š`virtualenv venv`
-  *  å•Ÿå‹•è™›æ“¬ç’°å¢ƒï¼Œé€™æ¨£å¥—ä»¶å°±æœƒè£åœ¨ç›®éŒ„åº•ä¸‹çš„venvè³‡æ–™å¤¾ï¼š`. venv/bin/activate`
+1. OS£ºUbuntu / OSX would be nice
+2. environment£ºneed python3 `sudo apt-get update; sudo apt-get install; python3 python3-dev`
+3. Ê¹ÓÃÌ“”M­h¾³È¥°²Ñb±¾Ì×¼ş ( recommended ) £º`pip install virtualenv`
+  * ½¨Á¢Ì“”M­h¾³£¬È¡Ãû½Ğ×÷venv£º`virtualenv venv`
+  *  †¢„ÓÌ“”M­h¾³£¬ß@˜ÓÌ×¼ş¾Í•şÑbÔÚÄ¿ä›µ×ÏÂµÄvenvÙYÁÏŠA£º`. venv/bin/activate`
 ### Installing
 
 ```
-git clone https://david30907d@bitbucket.org/udiclab/term_classification.git
+git clone https://github.com/UDICatNCHU/PTT_KCM_API.git
 make install
 ```
 
@@ -30,64 +30,95 @@ make install
 ## Run
 
 
-1. åˆæ¬¡å•Ÿå‹•éœ€è¦å…ˆçˆ¬PTTè³‡æ–™ï¼š`make firstRunCrawler`
-2. å•Ÿå‹•djangoå°ˆæ¡ˆï¼š`./manage.py runserver`
-3. é–‹å•Ÿç€è¦½å™¨ï¼Œè¼¸å…¥ï¼š `http://127.0.0.1:8000/PTT_KCM_API/api/articles/?issue={æƒ³è¦æŸ¥è©¢çš„é—œéµå­—}`
-4. EXï¼š[é€£çµ](http://127.0.0.1:8000/PTT_KCM_API/api/articles/?issue=å…‰å¾©ç¯€)
+1. ³õ´Î†¢„ÓĞèÒªÏÈÅÀPTTÙYÁÏ£º`make firstRunCrawler`
+2. †¢„ÓdjangoŒ£°¸£º`./manage.py runserver`
+3. é_†¢gÓ[Æ÷£¬İ”Èë£º `http://127.0.0.1:8000/PTT_KCM_API/build_IpTable/`
+  * ½¨Á¢PttÓÃ‘ôÅc°lÎÄµÄIPŒ¦ÕÕ±í
+4. é_†¢gÓ[Æ÷£¬™z²éÒ»ÏÂAPIÊÇ·ñÕı³£®a³öjsonÙYÁÏ
 
 ### Break down into end to end tests
 
 
-1. åŸ·è¡Œå…¨éƒ¨çš„æ¸¬è©¦ï¼š`make test`
-2. åˆ†åˆ¥æ¸¬è©¦ï¼š
-  * æ¸¬è©¦pttçˆ¬èŸ²ï¼š`cd ptt-web-crawler; python test.py`
-  * æ¸¬è©¦PTT_KCM_APIï¼š**å°šç„¡**
+1. ˆÌĞĞÈ«²¿µÄœyÔ‡£º`make test`
+2. ·Ö„eœyÔ‡£º
+  * œyÔ‡pttÅÀÏx£º`cd ptt-web-crawler; python test.py`
+  * œyÔ‡PTT_KCM_API£º**ÉĞŸo**
 
 ### And coding style tests
 
-ç›®å‰æ²’æœ‰coding style tests...
+Ä¿Ç°›]ÓĞcoding style tests...
 
 ### Results
 
-```
-[
-  {
-    "article_id": "M.1477366093.A.CF0",
-    "article_title": "[è¨è«–] ä»Šå¤©æ˜¯å°ç£å…‰å¾©ç¯€&å¤å¯§é ­æˆ°å½¹ç´€å¿µæ—¥",
-    "author": "McCain (é•·é«®é¦¬å°¾æ§)",
-    "board": "HatePolitics",
-    "content": "ä»Šå¤©æ˜¯å°ç£å…‰å¾©ç¯€ å„ä½æœ‰æ”¾å‡å—? è‡ªå¾é€²å…¥è·å ´ä¹‹å¾Œ ä»Šå¤©æˆ‘æ˜¯ç¬¬ä¸€æ¬¡åœ¨éå‘¨æœ«çš„æƒ…æ³ä¸‹ é‚„èƒ½æ”¾åˆ°é€™å€‹ç¯€æ—¥ ä¸éæ‡‰è©²ä¹Ÿæ˜¯å”¯ä¸€çš„ä¸€æ¬¡äº† å› ç‚ºä¸ä¹…å¾Œå°±è¦ä¿®æ³• ...2004 2010 R McCain 1505372 77% McCain 1005615 59% D Starky 404507 20% Glassman 592011 35% L Hancock 51798 3% Libertarian 80097 5% ",
-    "date": "Tue Oct 25 11:28:08 2016",
-    "ip": "114.45.182.54",
-    "message_conut": {
-      "all": 10,
-      "boo": 0,
-      "count": 5,
-      "neutral": 5,
-      "push": 5
-    },
-    "messages": [
+APIÊ¹ÓÃ·½Ê½£¨ÏÂÃæËùŒ‘µÄÊÇapiµÄURL pattern£©£º
+
+1. È¡µÃÌØ¶¨Ö÷î}µÄPTTÎÄÕÂ£º `PTT_KCM_API/api/articles/?issue={Ö÷î}Ãû·Q}`
+  * ¹ Àı£º`PTT_KCM_API/api/articles/?issue=¹âÍ¹`
+  * reeulst£º
+    ```
+    [
       {
-        "push_content": "å…‰å¾©ç¯€? é€™å€‹è©å…¶å¯¦è »å¤šçˆ­è­°çš„",
-        "push_ipdatetime": "10/25 11:33",
-        "push_tag": "â†’",
-        "push_userid": "Antler5566"
+        "article_id": "M.1477366093.A.CF0",
+        "article_title": "[Ó‘Õ“] ½ñÌìÊÇÌ¨³¹âÍ¹&¹ÅŒî^‘ğÒÛ¼oÄîÈÕ",
+        "author": "McCain (éLóŒñRÎ²¿Ø)",
+        "board": "HatePolitics",
+        "content": "½ñÌìÊÇÌ¨³¹âÍ¹ ¸÷Î»ÓĞ·Å¼Ù†á?...",
+        "date": "Tue Oct 25 11:28:08 2016",
+        "ip": "114.45.182.54",
+        "message_conut": {
+          "all": 10,
+          "boo": 0,
+          "count": 5,
+          "neutral": 5,
+          "push": 5
+        },
+        "messages": [
+          {
+            "push_content": "¹âÍ¹? ß@‚€Ô~ÆäŒĞU¶à ×hµÄ",
+            "push_ipdatetime": "10/25 11:33",
+            "push_tag": "¡ú",
+            "push_userid": "Antler5566"
+          },
+          ...
+        ]
       },
-      ...
-    ]
-  },
-```
+    ```
+
+2. È¡µÃÌØ¶¨Ö÷î}ÎÄÕÂµÄ…¢ÅcÕßËû‚ƒµÄIPÅcŒ¦×hî}µÄÖ§³Ö³Ì¶È£º`PTT_KCM_API/api/ip/?issue={Ö÷î}Ãû·Q}`
+  * ¹ Àı£º`/PTT_KCM_API/api/ip/?issue=¹âÍ¹`
+  * result£º
+    ```
+    {
+      "issue": "¹âÍ¹",
+      "author": [
+        {
+          "date": "Tue Oct 25 11:28:08 2016",
+          "author": "McCain (éLóŒñRÎ²¿Ø)",
+          "ip": "114.45.182.54",
+          "score": -1
+        },
+        ...
+      ]
+      "attendee": [
+        {
+          "push_userid": "Antler5566",
+          "score": 1,
+          "ip": "140.120.4.13",
+          "push_ipdatetime": "10/25 11:33"
+        }
+        ...
+      ],
+    }
+    ```
 
 ## Deployment
 
 
-ç›®å‰åªæ˜¯ä¸€èˆ¬çš„ **django** ç¨‹å¼ï¼Œä½¿ç”¨gunicornæˆ–è€…uwsgiä½ˆç½²å³å¯
+Ä¿Ç°Ö»ÊÇÒ»°ãµÄ **django** ³ÌÊ½£¬Ê¹ÓÃgunicorn»òÕßuwsgiÑÊğ¼´¿É
 
 ## Built With
 
-* python3.2
-* python3.3
-* python3.4
+* Django 1.10.2
 * python3.5
 
 ## Versioning
@@ -96,7 +127,7 @@ For the versions available, see the [tags on this repository](https://github.com
 
 ## Contributors
 
-* **å¼µæ³°ç‘‹** [david](https://github.com/david30907d)
+* **ˆÌ©¬|** [david](https://github.com/david30907d)
 
 ## License
 
@@ -104,4 +135,4 @@ This project is licensed under the **GNU 3.0** License - see the [LICENSE.md](LI
 
 ## Acknowledgments
 
-* æ„Ÿè¬ **jwline** å¯¦ä½œçš„[PTTçˆ¬èŸ²](https://github.com/jwlin/ptt-web-crawler)
+* ¸ĞÖx **jwline** Œ×÷µÄ[PTTÅÀÏx](https://github.com/jwlin/ptt-web-crawler)
