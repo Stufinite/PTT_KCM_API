@@ -52,45 +52,55 @@ def locations(request):
 	apiURL = request.get_host() + urlPattern +"?issue={}".format(urllib.parse.quote(issue))
 	jsonText = requests.get('http://' + apiURL)
 	jsonText = json.loads(jsonText.text)
-
+	# print(jsonText)
 
 	result = dict(
 		issue=issue,
 		map={}
 	)
-	score = 0
-	for i in jsonText['attendee']:
-		if i['ip'] != None and i['ip'] != "None":
-			build_map(i, result)
 
-	for i in jsonText['author']:
-		if i['ip'] != None and i['ip'] != "None":
-			build_map(i, result)
-			
+	ipList = set( (i['ip'], i['score'])
+		for i in jsonText['attendee']
+			if i['ip'] != None and i['ip'] != "None"
+	)
+	ipList = ipList.union(set( (i['ip'], i['score'])
+		for i in jsonText['author']
+			if i['ip'] != None and i['ip'] != "None"
+	))
+	build_map(ipList, result)
+
 	return JsonResponse(result, safe=False)
 
-def build_map(i, result):
+def build_map(ipList, result):
 	''' Create map instance.
 
 	dbip: ip-location json return from dbip api.
 	
 	if clause: if key name (eq:台南) doesn't exist, then create dict with that key name and calculate score and attendee.
 	'''
-	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + i['ip'])
+	ipString = ""
+	for ip, score in ipList:
+		ipString += ip + ','
+	ipString = ipString[:-1]
+	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ipString)
 	dbip = json.loads(dbip.text)
-	countryName = dbip['countryName']
-	stateProv = dbip['stateProv']
-	city = dbip['city']
+	# print(dbip)
+	# print(ipList)
 
+	for ip, score in ipList:
 
-	if countryName not in result['map']:
-		result['map'][countryName] = {}
-	if stateProv not in result['map'][countryName]:
-		result['map'][countryName][stateProv] = {}
-	if city not in result['map'][countryName][stateProv]:
-		result['map'][countryName][stateProv][city] = dict(
-			score=0,
-			attendee=0
-		)			
-	result['map'][countryName][stateProv][city]['score'] += i['score']
-	result['map'][countryName][stateProv][city]['attendee'] += 1
+		countryName = dbip[ip]['countryName']
+		stateProv = dbip[ip]['stateProv']
+		city = dbip[ip]['city']
+
+		if countryName not in result['map']:
+			result['map'][countryName] = {}
+		if stateProv not in result['map'][countryName]:
+			result['map'][countryName][stateProv] = {}
+		if city not in result['map'][countryName][stateProv]:
+			result['map'][countryName][stateProv][city] = dict(
+				score=0,
+				attendee=0
+			)			
+		result['map'][countryName][stateProv][city]['score'] += score
+		result['map'][countryName][stateProv][city]['attendee'] += 1
