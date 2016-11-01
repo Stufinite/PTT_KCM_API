@@ -52,7 +52,6 @@ def locations(request):
 	apiURL = request.get_host() + urlPattern +"?issue={}".format(urllib.parse.quote(issue))
 	jsonText = requests.get('http://' + apiURL)
 	jsonText = json.loads(jsonText.text)
-	# print(jsonText)
 
 	result = dict(
 		issue=issue,
@@ -84,8 +83,6 @@ def build_map(ipList, result):
 	ipString = ipString[:-1]
 	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ipString)
 	dbip = json.loads(dbip.text)
-	# print(dbip)
-	# print(ipList)
 
 	for ip, score in ipList:
 

@@ -1,13 +1,13 @@
 import json
 from PTT_KCM_API.models import IpTable, IP
 class pttJson(object):
-	"""	A pttJson object having api for web to query
-    Args:
-        filePath: path to ptt json file.
+	""" A pttJson object having api for web to query
+	Args:
+		filePath: path to ptt json file.
 
-    Returns:
+	Returns:
 		ptt articles with specific issue.
-    """
+	"""
 	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json'):
 		self.filePath = filePath
 		self.articleLists = []
@@ -28,19 +28,20 @@ class pttJson(object):
 
 	def build_IpTable(self):
 		for i in self.json['articles']:
-			userObj, created = IpTable.objects.get_or_create(
-			    userID = i['author'].split(' ')[0],
-			    defaults={ 
-			    	'userID' : i['author'].split(' ')[0],
-			    	'mostFreqCity' : ""
-			    }
-			)
+			if  "error" not in i:
+				userObj, created = IpTable.objects.get_or_create(
+					userID = i['author'].split(' ')[0],
+					defaults={ 
+						'userID' : i['author'].split(' ')[0],
+						'mostFreqCity' : ""
+					}
+				)
 
-			ipObj, created = IP.objects.get_or_create(
-				ip = i['ip'],
-				defaults = {
-					'ip' : i['ip'],
-					'city' : ""
-				}
-			)
-			userObj.ipList.add(ipObj)
+				ipObj, created = IP.objects.get_or_create(
+					ip = i['ip'],
+					defaults = {
+						'ip' : i['ip'],
+						'city' : ""
+					}
+				)
+				userObj.ipList.add(ipObj)
