@@ -22,9 +22,12 @@ class pttJson(object):
 		return self.articleLists
 
 	def fileter_with_issue(self, issue):
-		for i in self.json['articles']:
-			if issue in i['article_title'] or issue in i['content']:
-				self.articleLists.append(i)
+		try:
+			for i in self.json['articles']:
+				if issue in i['article_title'] or issue in i['content']:
+					self.articleLists.append(i)
+		except Exception as e:
+			pass
 
 	def build_IpTable(self):
 		for i in self.json['articles']:
