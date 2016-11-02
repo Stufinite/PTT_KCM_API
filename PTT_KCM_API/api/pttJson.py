@@ -23,7 +23,7 @@ class pttJson(object):
 
 	def fileter_with_issue(self, issue):
 		try:
-			self.articleLists = ( 
+			self.articleLists = tuple( 
 				i
 				for i in self.json['articles'] 
 					if issue in i['article_title'] or issue in i['content']
