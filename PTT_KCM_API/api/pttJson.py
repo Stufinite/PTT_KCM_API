@@ -1,4 +1,4 @@
-import json
+import json, requests
 from PTT_KCM_API.models import IpTable, IP
 from PTT_KCM_API.dbip_apiKey import apiKey
 
@@ -62,8 +62,8 @@ def getUserID(IdStr):
 def Ip2City(ip):
 	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ip)
 	dbip = json.loads(dbip.text)
-
 	ipDict = dict(
+		ip = ip,
 		countryName = dbip['countryName'],
 		stateProv = dbip['stateProv'],
 		city = dbip['city'],
