@@ -66,7 +66,7 @@ def Ip2City(ip):
 	ipDict = dict(
 		countryName = dbip['countryName'],
 		stateProv = dbip['stateProv'],
-		city = dbip['city']
+		city = dbip['city'],
 		continentName = dbip['continentName']
 	)
 	return ipDict
