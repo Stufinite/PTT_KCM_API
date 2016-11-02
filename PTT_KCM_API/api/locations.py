@@ -81,6 +81,7 @@ def build_map(ipList, result):
 	for ip, score in ipList:
 		ipString += ip + ','
 	ipString = ipString[:-1]
+	print(ipString)
 	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ipString)
 	dbip = json.loads(dbip.text)
 
