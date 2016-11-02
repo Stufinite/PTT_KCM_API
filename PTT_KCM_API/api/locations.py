@@ -3,6 +3,7 @@ from django.urls import reverse
 from functools import wraps
 from PTT_KCM_API.api.articles import queryString_required
 from PTT_KCM_API.dbip_apiKey import apiKey
+from PTT_KCM_API.models import IP
 import json, requests, urllib
 
 @queryString_required('issue')
@@ -77,18 +78,19 @@ def build_map(ipList, result):
 	
 	if clause: if key name (eq:台南) doesn't exist, then create dict with that key name and calculate score and attendee.
 	'''
-	ipString = ""
 	for ip, score in ipList:
-		ipString += ip + ','
-	ipString = ipString[:-1]
-	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ipString)
-	dbip = json.loads(dbip.text)
+		try:
+			ipresult = IP.objects.get(ip = ip)
+			countryName = ipresult.countryName
+			stateProv = ipresult.stateProv
+			city = ipresult.city
 
-	for ip, score in ipList:
-
-		countryName = dbip[ip]['countryName']
-		stateProv = dbip[ip]['stateProv']
-		city = dbip[ip]['city']
+		except Exception as e:
+			ipresult = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ip)
+			ipresult = json.loads(dbip.text)
+			countryName = ipresult['countryName']
+			stateProv = ipresult['stateProv']
+			city = ipresult['city']
 
 		if countryName not in result['map']:
 			result['map'][countryName] = {}

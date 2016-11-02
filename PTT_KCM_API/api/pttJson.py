@@ -1,5 +1,7 @@
 import json
 from PTT_KCM_API.models import IpTable, IP
+from PTT_KCM_API.dbip_apiKey import apiKey
+
 class pttJson(object):
 	""" A pttJson object having api for web to query
 	Args:
@@ -43,12 +45,9 @@ class pttJson(object):
 						}
 					)
 
-					ipObj, created = IP.objects.get_or_create(
+					ipObj, created = IP.objects.update_or_create(
 						ip = i['ip'],
-						defaults = {
-							'ip' : i['ip'],
-							'city' : ""
-						}
+						defaults = Ip2City(i['ip'])
 					)
 					userObj.ipList.add(ipObj)
 			except Exception as e:
@@ -60,3 +59,15 @@ def getUserID(IdStr):
 		IdStr = IdStr[:index]
 	IdStr = IdStr.strip()
 	return IdStr
+
+def Ip2City(ip):
+	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ip)
+	dbip = json.loads(dbip.text)
+
+	ipDict = dict(
+		countryName = dbip['countryName'],
+		stateProv = dbip['stateProv'],
+		city = dbip['city']
+		continentName = dbip['continentName']
+	)
+	return ipDict
