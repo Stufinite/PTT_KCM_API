@@ -10,7 +10,7 @@ class pttJson(object):
 	"""
 	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json'):
 		self.filePath = filePath
-		self.articleLists = []
+		self.articleLists = ()
 		self.json = self._get_pttJson()
 
 	def _get_pttJson(self):
@@ -23,20 +23,22 @@ class pttJson(object):
 
 	def fileter_with_issue(self, issue):
 		try:
-			for i in self.json['articles']:
-				if issue in i['article_title'] or issue in i['content']:
-					self.articleLists.append(i)
+			self.articleLists = ( 
+				i
+				for i in self.json['articles'] 
+					if issue in i['article_title'] or issue in i['content']
+			)
 		except Exception as e:
 			pass
 
 	def build_IpTable(self):
 		for i in self.json['articles']:
 			try:
-				if  "error" not in i:
+				if  "error" not in i and i['ip'].find('.') != -1:
 					userObj, created = IpTable.objects.get_or_create(
-						userID = i['author'].split(' ')[0],
+						userID = getUserID(i['author']),
 						defaults={ 
-							'userID' : i['author'].split(' ')[0],
+							'userID' : getUserID(i['author']),
 							'mostFreqCity' : ""
 						}
 					)
@@ -51,3 +53,10 @@ class pttJson(object):
 					userObj.ipList.add(ipObj)
 			except Exception as e:
 				pass
+
+def getUserID(IdStr):
+	index = IdStr.find('(')
+	if index != -1:
+		IdStr = IdStr[:index]
+	IdStr = IdStr.strip()
+	return IdStr

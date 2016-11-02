@@ -58,7 +58,7 @@ def ip(request):
 	for i in jsonText:
 		for j in i['messages']:
 			result['attendee'].append( dict(
-					ip=get_IpofUser(j['push_userid']), 
+					ip=get_IpofUser("", j['push_userid']), 
 					push_ipdatetime=j['push_ipdatetime'], 
 					push_userid=j['push_userid'], 
 					score=get_score(j ,j['push_tag'])) 
@@ -86,11 +86,14 @@ def get_score(obj, text):
 		except Exception as e:
 			return 0
 
-def get_IpofUser(userID):
-	ipt = IpTable.objects.filter(userID=userID)
-	if len(ipt) == 0:
-		return None
+def get_IpofUser(ip, userID):
+	if ip.find('.') != -1:
+		return ip
 	else:
-		ipt = ipt[0]
-		ipList = ipt.ipList.all()
-		return ipList[0].ip
+		ipt = IpTable.objects.filter(userID=userID)
+		if len(ipt) == 0:
+			return None
+		else:
+			ipt = ipt[0]
+			ipList = ipt.ipList.all()
+			return ipList[0].ip
