@@ -52,6 +52,19 @@ class pttJson(object):
 			except Exception as e:
 				pass
 
+	def build_IpTable_with_IpList(self, file):
+		ipset = set()
+		with open(file, 'r', encoding='utf8') as f:
+			for i in f:
+				if i.find('.') != -1:
+					i = i.replace('\n','')
+					ipset.add(i)
+		for ip in ipset:
+			ipObj, created = IP.objects.update_or_create(
+				ip = ip,
+				defaults = Ip2City(ip)
+			)
+
 def getUserID(IdStr):
 	index = IdStr.find('(')
 	if index != -1:
@@ -61,6 +74,28 @@ def getUserID(IdStr):
 
 def Ip2City(ip):
 	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ip)
+	dbip = json.loads(dbip.text)
+	ipDict = dict(
+		ip = ip,
+		countryName = dbip['countryName'],
+		stateProv = dbip['stateProv'],
+		city = dbip['city'],
+		continentName = dbip['continentName']
+	)
+	return ipDict
+def Ip2City2(ip):
+	dbip = requests.get('http://api.db-ip.com/v2/' + 'ec5942a0169e0ee70284875cfd5dac5f98632750' + '/' + ip)
+	dbip = json.loads(dbip.text)
+	ipDict = dict(
+		ip = ip,
+		countryName = dbip['countryName'],
+		stateProv = dbip['stateProv'],
+		city = dbip['city'],
+		continentName = dbip['continentName']
+	)
+	return ipDict
+def Ip2City3(ip):
+	dbip = requests.get('http://api.db-ip.com/v2/' + '37c8932b3c75b30e299a1d5e651e2bacff147ea3' + '/' + ip)
 	dbip = json.loads(dbip.text)
 	ipDict = dict(
 		ip = ip,
