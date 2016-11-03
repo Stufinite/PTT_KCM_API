@@ -40,9 +40,9 @@ class pttJson(object):
 					self.articleLists.append(i)
 			except Exception as e:
 				with open('error.log', 'a', encoding='utf8') as f:
-					f.write(e)
+					f.write(str(e))
 					f.write('---------------------------------\n')
-					f.write(i)
+					f.write(str(i))
 
 	def saveFile(self, issue, type, file):
 		with open(self.getIssueFilePath(issue, type), 'w', encoding='utf8') as f:
