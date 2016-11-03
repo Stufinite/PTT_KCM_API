@@ -24,13 +24,10 @@ class pttJson(object):
 		return self.articleLists
 
 	def fileter_with_issue(self, issue):
-		try:	
 			self.articleLists = [] 
 			for i in self.json['articles']:
-				if issue in i['article_title'] or issue in i['content']:
+				if issue in i.get('article_title', '') or issue in i.get('content', ''):
 					self.articleLists.append(i)
-		except Exception as e:
-			print(e)
 
 	def build_IpTable(self):
 		for i in self.json['articles']:
@@ -50,7 +47,7 @@ class pttJson(object):
 					)
 					userObj.ipList.add(ipObj)
 			except Exception as e:
-				pass
+				print(e)
 
 	def build_IpTable_with_IpList(self, file):
 		ipset = set()
