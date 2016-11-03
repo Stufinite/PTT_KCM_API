@@ -33,11 +33,16 @@ class pttJson(object):
 		return '{}/{}'.format(self.dirPath, issue)
 
 	def fileter_with_issue(self, issue, type = "articles"):
-		self.articleLists = tuple(
-			i
-			for i in self.json['articles']
-				if issue in i.get('article_title', '') or issue in i.get('content', '')
-		)
+		self.articleLists = []
+		for i in self.json['articles']:
+			try:
+				if issue in i.get('article_title', '') or issue in i.get('content', ''):
+					self.articleLists.append(i)
+			except Exception as e:
+				with open('error.log', 'a', encoding='utf8') as f:
+					f.write(e)
+					f.write('---------------------------------\n')
+					f.write(i)
 
 	def saveFile(self, issue, type, file):
 		with open(self.getIssueFilePath(issue, type), 'w', encoding='utf8') as f:
@@ -49,7 +54,6 @@ class pttJson(object):
 
 	def hasFile(self, issue, type):
 		file = Path(self.getIssueFilePath(issue, type))
-		print(file)
 		if file.is_file():
 			return True
 		else: return False
