@@ -4,6 +4,7 @@ from functools import wraps
 from PTT_KCM_API.api.articles import queryString_required
 from PTT_KCM_API.dbip_apiKey import apiKey
 from PTT_KCM_API.models import IP
+from PTT_KCM_API.api.pttJson import pttJson
 import json, requests, urllib
 
 @queryString_required('issue')
@@ -49,25 +50,30 @@ def locations(request):
 				score: the sentiment value caculated from social network.
   	"""
 	issue = request.GET['issue']
-	urlPattern = reverse('PTT_KCM_API:ip')
-	apiURL = request.get_host() + urlPattern +"?issue={}".format(urllib.parse.quote(issue))
-	jsonText = requests.get('http://' + apiURL)
-	jsonText = json.loads(jsonText.text)
+	p = pttJson()
+	if p.hasFile(issue, "locations"):
+		result = p.loadFile(p.getIssueFilePath(issue, 'locations'))
+	else:
+		urlPattern = reverse('PTT_KCM_API:ip')
+		apiURL = request.get_host() + urlPattern +"?issue={}".format(urllib.parse.quote(issue))
+		jsonText = requests.get('http://' + apiURL)
+		jsonText = json.loads(jsonText.text)
 
-	result = dict(
-		issue=issue,
-		map={}
-	)
+		result = dict(
+			issue=issue,
+			map={}
+		)
 
-	ipList = set( (i['ip'], i['score'])
-		for i in jsonText['attendee']
-			if i['ip'] != None and i['ip'] != "None"
-	)
-	ipList = ipList.union(set( (i['ip'], i['score'])
-		for i in jsonText['author']
-			if i['ip'] != None and i['ip'] != "None"
-	))
-	build_map(ipList, result)
+		ipList = set( (i['ip'], i['score'])
+			for i in jsonText['attendee']
+				if i['ip'] != None and i['ip'] != "None"
+		)
+		ipList = ipList.union(set( (i['ip'], i['score'])
+			for i in jsonText['author']
+				if i['ip'] != None and i['ip'] != "None"
+		))
+		build_map(ipList, result)
+		p.saveFile(issue, 'locations', result)
 
 	return JsonResponse(result, safe=False)
 

@@ -3,7 +3,7 @@ from django.utils import timezone # auto generate create time.
 from django.http import JsonResponse, Http404
 from PTT_KCM_API.api.pttJson import pttJson
 from functools import wraps
-import json, re
+import json, re, os
 
 def queryString_required(str):
 	"""	An decorator checking whether queryString key is valid or not
@@ -30,6 +30,14 @@ def articles(request):
     """
 	p = pttJson()
 	issue = request.GET['issue']
-	p.fileter_with_issue(issue)
+	if p.hasFile(issue, 'articles'):
+		p.articleLists = p.loadFile(p.getIssueFilePath(issue, 'articles'))
+	elif os.path.exists(p.getIssueFolderPath(issue)):
+		p.fileter_with_issue(issue, 'articles')
+		p.saveFile(issue, 'articles', p.articleLists)
+	else:
+		p.fileter_with_issue(issue, 'articles')
+		os.makedirs(p.getIssueFolderPath(issue))
+		p.saveFile(issue, 'articles', p.articleLists)
 	return JsonResponse(p.get_articles(), safe=False)
 

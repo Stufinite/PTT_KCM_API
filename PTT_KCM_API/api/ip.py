@@ -1,9 +1,10 @@
 from django.http import JsonResponse, Http404
 from django.urls import reverse
 from PTT_KCM_API.api.articles import queryString_required
+from PTT_KCM_API.models import IpTable
+from PTT_KCM_API.api.pttJson import pttJson
 from functools import wraps
 import json, requests, urllib
-from PTT_KCM_API.models import IpTable
 
 @queryString_required('issue')
 def ip(request):
@@ -39,30 +40,36 @@ def ip(request):
 		jsonText: json response getten from api.
 	"""
 	issue = request.GET['issue']
-	urlPattern = reverse('PTT_KCM_API:articles')
-	apiURL = request.get_host() + urlPattern +"?issue={}".format(urllib.parse.quote(issue))
-	jsonText = requests.get('http://' + apiURL)
+	p = pttJson()
+	if p.hasFile(issue, "ip"):
+		result = p.loadFile(p.getIssueFilePath(issue, 'ip'))
+	else:
+		urlPattern = reverse('PTT_KCM_API:articles')
+		apiURL = request.get_host() + urlPattern +"?issue={}".format(urllib.parse.quote(issue))
+		jsonText = requests.get('http://' + apiURL)
+		jsonText = json.loads(jsonText.text)
 
-	jsonText = json.loads(jsonText.text)
-	result = dict(
-		issue=issue, 
-		attendee=[], 
-		author=[]
-	)
-	result['author'] = [ dict(
-		author=i['author'], 
-		ip=i['ip'], 
-		date=i['date'], 
-		score=get_score(i, i['article_title'])) for i in jsonText 
-	]
-	for i in jsonText:
-		for j in i['messages']:
-			result['attendee'].append( dict(
-					ip=get_IpofUser("", j['push_userid']), 
-					push_ipdatetime=j['push_ipdatetime'], 
-					push_userid=j['push_userid'], 
-					score=get_score(j ,j['push_tag'])) 
-			)
+		result = dict(
+			issue=issue, 
+			attendee=[], 
+			author=[]
+		)
+		result['author'] = [ dict(
+			author=i['author'], 
+			ip=i['ip'], 
+			date=i['date'], 
+			score=get_score(i, i['article_title'])) for i in jsonText 
+		]
+		for i in jsonText:
+			for j in i['messages']:
+				result['attendee'].append( dict(
+						ip=get_IpofUser("", j['push_userid']), 
+						push_ipdatetime=j['push_ipdatetime'], 
+						push_userid=j['push_userid'], 
+						score=get_score(j ,j['push_tag'])) 
+				)
+
+		p.saveFile(issue, 'ip', result)
 	return JsonResponse(result, safe=False)
 
 def get_score(obj, text):

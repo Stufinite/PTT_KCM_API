@@ -1,6 +1,8 @@
-import json, requests
+import json, requests, os, time
 from PTT_KCM_API.models import IpTable, IP
 from PTT_KCM_API.dbip_apiKey import apiKey
+from pathlib import Path
+
 
 class pttJson(object):
 	""" A pttJson object having api for web to query
@@ -13,9 +15,10 @@ class pttJson(object):
 	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json'):
 		self.filePath = filePath
 		self.articleLists = ()
-		self.json = self._get_pttJson()
+		self.json = self.__get_pttJson()
+		self.dirPath = 'PTT_KCM_API/json'
 
-	def _get_pttJson(self):
+	def __get_pttJson(self):
 		with open(self.filePath, 'r', encoding='utf8') as f:
 			result = json.load(f)
 		return result
@@ -23,11 +26,34 @@ class pttJson(object):
 	def get_articles(self):
 		return self.articleLists
 
-	def fileter_with_issue(self, issue):
-			self.articleLists = [] 
-			for i in self.json['articles']:
-				if issue in i.get('article_title', '') or issue in i.get('content', ''):
-					self.articleLists.append(i)
+	def getIssueFilePath(self, issue, type):
+		return '{}/{}/{}.json.{}'.format(self.dirPath, issue, issue, type)
+
+	def getIssueFolderPath(self, issue):
+		return '{}/{}'.format(self.dirPath, issue)
+
+	def fileter_with_issue(self, issue, type = "articles"):
+		self.articleLists = tuple(
+			i
+			for i in self.json['articles']
+				if issue in i.get('article_title', '') or issue in i.get('content', '')
+		)
+
+	def saveFile(self, issue, type, file):
+		with open(self.getIssueFilePath(issue, type), 'w', encoding='utf8') as f:
+			json.dump(file, f)
+
+	def loadFile(self, filePath):
+		with open(filePath, 'r', encoding='utf8') as f:
+			return json.load(f)
+
+	def hasFile(self, issue, type):
+		file = Path(self.getIssueFilePath(issue, type))
+		print(file)
+		if file.is_file():
+			return True
+		else: return False
+
 
 	def build_IpTable(self):
 		for i in self.json['articles']:
@@ -79,6 +105,7 @@ def Ip2City(ip):
 		city = dbip['city'],
 		continentName = dbip['continentName']
 	)
+	time.sleep(5)
 	return ipDict
 def Ip2City2(ip):
 	dbip = requests.get('http://api.db-ip.com/v2/' + 'ec5942a0169e0ee70284875cfd5dac5f98632750' + '/' + ip)
