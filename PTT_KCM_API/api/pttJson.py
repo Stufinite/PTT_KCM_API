@@ -91,6 +91,24 @@ class pttJson(object):
 				ip = ip,
 				defaults = Ip2City(ip)
 			)
+	def putintodb(self):
+		with open('iplist1.json', 'r', encoding='utf8') as f:
+			dbip = json.load(f)
+			for ipjson in dbip:
+				ipObj, created = IP.objects.update_or_create(
+					ip = ipjson['ipAddress'],
+					defaults = ipGetFromJson(ipjson)
+				)
+
+def ipGetFromJson(ipjson):
+	ipDict = dict(
+		ip = ipjson['ipAddress'],
+		countryName = ipjson['countryName'],
+		stateProv = ipjson['stateProv'],
+		city = ipjson['city'],
+		continentName = ipjson['continentName']
+	)
+	return ipDict
 
 def getUserID(IdStr):
 	index = IdStr.find('(')

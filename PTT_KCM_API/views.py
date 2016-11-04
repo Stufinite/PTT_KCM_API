@@ -23,7 +23,7 @@ def build_IpTable_with_IpList2(request):
 	p.build_IpTable_with_IpList('1500_4000.txt')
 	return HttpResponse("Build IpTable with List 1500_4000!!!")
 
-def build_IpTable_with_IpList3(request):
+def putintodb(request):
 	p = pttJson()
-	p.build_IpTable_with_IpList('4000_4133.txt')
+	p.putintodb()
 	return HttpResponse("Build IpTable with List 4000_4133 !!!")
