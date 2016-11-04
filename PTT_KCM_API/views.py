@@ -25,5 +25,5 @@ def putIntoDB(request):
 	if request.GET:
 		jsonfile = request.GET['file']
 		p = pttJson()
-		p.putintodb(jsonfile)
+		p.putIntoDB(jsonfile)
 	return HttpResponse("putIntoDB {} finish!!".format(jsonfile))
