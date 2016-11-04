@@ -1,4 +1,4 @@
-import json, requests, os, time
+import json, requests, os, time, random
 from PTT_KCM_API.models import IpTable, IP
 from PTT_KCM_API.dbip_apiKey import apiKey
 from pathlib import Path
@@ -17,6 +17,7 @@ class pttJson(object):
 		self.articleLists = ()
 		self.json = self.__get_pttJson()
 		self.dirPath = 'PTT_KCM_API/json'
+		self.InputdirPath = 'PTT_KCM_API/RawIpInput/'
 
 	def __get_pttJson(self):
 		with open(self.filePath, 'r', encoding='utf8') as f:
@@ -79,20 +80,24 @@ class pttJson(object):
 			except Exception as e:
 				print(e)
 
-	def build_IpTable_with_IpList(self, file):
+	def build_IpTable_with_IpList(self, file, key):
 		ipset = set()
-		with open(file, 'r', encoding='utf8') as f:
+		with open(self.InputdirPath+file, 'r', encoding='utf8') as f:
 			for i in f:
 				if i.find('.') != -1:
 					i = i.replace('\n','')
 					ipset.add(i)
 		for ip in ipset:
-			ipObj, created = IP.objects.update_or_create(
-				ip = ip,
-				defaults = Ip2City(ip)
-			)
-	def putintodb(self):
-		with open('iplist1.json', 'r', encoding='utf8') as f:
+			try:
+				ipObj, created = IP.objects.update_or_create(
+					ip = ip,
+					defaults = Ip2City_from_ipList(ip, key)
+				)
+			except Exception as e:
+				pass
+
+	def putIntoDB(self, ipjson,):
+		with open(self.InputdirPath+ipjson, 'r', encoding='utf8') as f:
 			dbip = json.load(f)
 			for ipjson in dbip:
 				ipObj, created = IP.objects.update_or_create(
@@ -100,15 +105,6 @@ class pttJson(object):
 					defaults = ipGetFromJson(ipjson)
 				)
 
-def ipGetFromJson(ipjson):
-	ipDict = dict(
-		ip = ipjson['ipAddress'],
-		countryName = ipjson['countryName'],
-		stateProv = ipjson['stateProv'],
-		city = ipjson['city'],
-		continentName = ipjson['continentName']
-	)
-	return ipDict
 
 def getUserID(IdStr):
 	index = IdStr.find('(')
@@ -129,25 +125,29 @@ def Ip2City(ip):
 	)
 	time.sleep(5)
 	return ipDict
-def Ip2City2(ip):
-	dbip = requests.get('http://api.db-ip.com/v2/' + 'ec5942a0169e0ee70284875cfd5dac5f98632750' + '/' + ip)
-	dbip = json.loads(dbip.text)
+
+def Ip2City_from_ipList(ip, key):
+	dbip = requests.get('http://api.db-ip.com/v2/' + key + '/' + ip)
+	try:
+		dbip = json.loads(dbip.text)
+		ipDict = dict(
+			ip = ip,
+			countryName = dbip['countryName'],
+			stateProv = dbip['stateProv'],
+			city = dbip['city'],
+			continentName = dbip['continentName']
+		)
+		time.sleep(random.randint(1,5))
+		return ipDict
+	except Exception as e:
+		pass
+
+def ipGetFromJson(ipjson):
 	ipDict = dict(
-		ip = ip,
-		countryName = dbip['countryName'],
-		stateProv = dbip['stateProv'],
-		city = dbip['city'],
-		continentName = dbip['continentName']
-	)
-	return ipDict
-def Ip2City3(ip):
-	dbip = requests.get('http://api.db-ip.com/v2/' + '37c8932b3c75b30e299a1d5e651e2bacff147ea3' + '/' + ip)
-	dbip = json.loads(dbip.text)
-	ipDict = dict(
-		ip = ip,
-		countryName = dbip['countryName'],
-		stateProv = dbip['stateProv'],
-		city = dbip['city'],
-		continentName = dbip['continentName']
+		ip = ipjson['ipAddress'],
+		countryName = ipjson['countryName'],
+		stateProv = ipjson['stateProv'],
+		city = ipjson['city'],
+		continentName = ipjson['continentName']
 	)
 	return ipDict

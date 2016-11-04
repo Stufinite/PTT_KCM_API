@@ -13,17 +13,17 @@ def build_IpTable(request):
 	p.build_IpTable()
 	return HttpResponse("Build IpTable!!!")
 
-def build_IpTable_with_IpList1(request):
-	p = pttJson()
-	p.build_IpTable_with_IpList('1_1500.txt')
-	return HttpResponse("Build IpTable with List 1_1500!!!")
+def build_IpTable_with_IpList(request):
+	if request.GET:
+		file = request.GET['file']
+		apiKey = request.GET['apiKey']
+		p = pttJson()
+		p.build_IpTable_with_IpList(file, apiKey)
+	return HttpResponse("Build IpTable with List {} and key {}!!!".format(file, apiKey))
 
-def build_IpTable_with_IpList2(request):
-	p = pttJson()
-	p.build_IpTable_with_IpList('1500_4000.txt')
-	return HttpResponse("Build IpTable with List 1500_4000!!!")
-
-def putintodb(request):
-	p = pttJson()
-	p.putintodb()
-	return HttpResponse("Build IpTable with List 4000_4133 !!!")
+def putIntoDB(request):
+	if request.GET:
+		jsonfile = request.GET['file']
+		p = pttJson()
+		p.putintodb(jsonfile)
+	return HttpResponse("putIntoDB {} finish!!".format(jsonfile))
