@@ -85,6 +85,8 @@ def build_map(ipList, result):
 	if clause: if key name (eq:台南) doesn't exist, then create dict with that key name and calculate score and attendee.
 	'''
 	for ip, score in ipList:
+		if score == 0:
+			continue
 		try:
 			ipresult = IP.objects.get(ip = ip)
 			countryName = ipresult.countryName
@@ -104,8 +106,13 @@ def build_map(ipList, result):
 			result['map'][countryName][stateProv] = {}
 		if city not in result['map'][countryName][stateProv]:
 			result['map'][countryName][stateProv][city] = dict(
-				score=0,
+				positive=0,
+				negative=0,
 				attendee=0
-			)			
-		result['map'][countryName][stateProv][city]['score'] += score
+			)
+
+		if score > 0:
+			result['map'][countryName][stateProv][city]['positive'] += score
+		else:
+			result['map'][countryName][stateProv][city]['negative'] += score
 		result['map'][countryName][stateProv][city]['attendee'] += 1
