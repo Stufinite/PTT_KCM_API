@@ -1,13 +1,16 @@
 from django.http import JsonResponse, Http404
 from django.urls import reverse
 from functools import wraps
-from PTT_KCM_API.api.articles import queryString_required
+from PTT_KCM_API.api.articles import queryString_required, date_proc
 from PTT_KCM_API.dbip_apiKey import apiKey
 from PTT_KCM_API.models import IP
+from PTT_KCM_API.api.pttJson import pttJson
 import json, requests, urllib
+from datetime import datetime, date
 
-@queryString_required('issue')
-def locations(request):
+@date_proc
+@queryString_required(['issue'])
+def locations(request, date):
 	""" Generate JSON with location. and score
 	Returns:
 		{
@@ -49,25 +52,30 @@ def locations(request):
 				score: the sentiment value caculated from social network.
   	"""
 	issue = request.GET['issue']
-	urlPattern = reverse('PTT_KCM_API:ip')
-	apiURL = request.get_host() + urlPattern +"?issue={}".format(urllib.parse.quote(issue))
-	jsonText = requests.get('http://' + apiURL)
-	jsonText = json.loads(jsonText.text)
+	p = pttJson()
+	if p.hasFile(issue, "locations", date):
+		result = p.loadFile(p.getIssueFilePath(issue, 'locations', date))
+	else:
+		urlPattern = reverse('PTT_KCM_API:ip')
+		apiURL = request.get_host() + urlPattern + "?issue={}".format(urllib.parse.quote(issue)) + ("&date={}".format(date.date()) if date.date() != datetime.today().date() else "")
+		jsonText = requests.get('http://' + apiURL)
+		jsonText = json.loads(jsonText.text)
 
-	result = dict(
-		issue=issue,
-		map={}
-	)
+		result = dict(
+			issue=issue,
+			map={}
+		)
 
-	ipList = set( (i['ip'], i['score'])
-		for i in jsonText['attendee']
-			if i['ip'] != None and i['ip'] != "None"
-	)
-	ipList = ipList.union(set( (i['ip'], i['score'])
-		for i in jsonText['author']
-			if i['ip'] != None and i['ip'] != "None"
-	))
-	build_map(ipList, result)
+		ipList = set( (i['ip'], i['score'])
+			for i in jsonText['attendee']
+				if i['ip'] != None and i['ip'] != "None"
+		)
+		ipList = ipList.union(set( (i['ip'], i['score'])
+			for i in jsonText['author']
+				if i['ip'] != None and i['ip'] != "None"
+		))
+		build_map(ipList, result)
+		p.saveFile(issue, 'locations', result, date)
 
 	return JsonResponse(result, safe=False)
 
@@ -79,6 +87,8 @@ def build_map(ipList, result):
 	if clause: if key name (eq:台南) doesn't exist, then create dict with that key name and calculate score and attendee.
 	'''
 	for ip, score in ipList:
+		if score == 0:
+			continue
 		try:
 			ipresult = IP.objects.get(ip = ip)
 			countryName = ipresult.countryName
@@ -98,8 +108,13 @@ def build_map(ipList, result):
 			result['map'][countryName][stateProv] = {}
 		if city not in result['map'][countryName][stateProv]:
 			result['map'][countryName][stateProv][city] = dict(
-				score=0,
+				positive=0,
+				negative=0,
 				attendee=0
-			)			
-		result['map'][countryName][stateProv][city]['score'] += score
+			)
+
+		if score > 0:
+			result['map'][countryName][stateProv][city]['positive'] += score
+		else:
+			result['map'][countryName][stateProv][city]['negative'] += score
 		result['map'][countryName][stateProv][city]['attendee'] += 1

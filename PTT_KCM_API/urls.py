@@ -6,7 +6,6 @@ urlpatterns = [
 	url(r'^api/ip/$', views.ip, name='ip'), # api that returns comments with ip.
 	url(r'^api/locations/$', views.locations, name='locations'), # api that returns comments with city in a Taiwan.
 	url(r'^build_IpTable/$', views.build_IpTable, name='build_IpTable'), # build IpTable.
-	url(r'^build_IpTable_with_IpList1/$', views.build_IpTable_with_IpList1, name='build_IpTable_with_IpList1'), # build IpTable.
-	url(r'^build_IpTable_with_IpList2/$', views.build_IpTable_with_IpList2, name='build_IpTable_with_IpList2'), # build IpTable.
-	url(r'^build_IpTable_with_IpList3/$', views.build_IpTable_with_IpList3, name='build_IpTable_with_IpList3'), # build IpTable.
+	url(r'^build_IpTable_with_IpList/$', views.build_IpTable_with_IpList, name='build_IpTable_with_IpList'), # build IpTable.
+	url(r'^putIntoDB/$', views.putIntoDB, name='putIntoDB'), # build IpTable.
 ]
