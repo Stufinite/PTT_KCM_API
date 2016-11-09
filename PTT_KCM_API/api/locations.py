@@ -1,14 +1,16 @@
 from django.http import JsonResponse, Http404
 from django.urls import reverse
 from functools import wraps
-from PTT_KCM_API.api.articles import queryString_required
+from PTT_KCM_API.api.articles import queryString_required, date_proc
 from PTT_KCM_API.dbip_apiKey import apiKey
 from PTT_KCM_API.models import IP
 from PTT_KCM_API.api.pttJson import pttJson
 import json, requests, urllib
+from datetime import datetime, date
 
-@queryString_required('issue')
-def locations(request):
+@date_proc
+@queryString_required(['issue'])
+def locations(request, date):
 	""" Generate JSON with location. and score
 	Returns:
 		{
@@ -51,11 +53,11 @@ def locations(request):
   	"""
 	issue = request.GET['issue']
 	p = pttJson()
-	if p.hasFile(issue, "locations"):
-		result = p.loadFile(p.getIssueFilePath(issue, 'locations'))
+	if p.hasFile(issue, "locations", date):
+		result = p.loadFile(p.getIssueFilePath(issue, 'locations', date))
 	else:
 		urlPattern = reverse('PTT_KCM_API:ip')
-		apiURL = request.get_host() + urlPattern +"?issue={}".format(urllib.parse.quote(issue))
+		apiURL = request.get_host() + urlPattern + "?issue={}".format(urllib.parse.quote(issue)) + ("&date={}".format(date.date()) if date.date() != datetime.today().date() else "")
 		jsonText = requests.get('http://' + apiURL)
 		jsonText = json.loads(jsonText.text)
 
@@ -73,7 +75,7 @@ def locations(request):
 				if i['ip'] != None and i['ip'] != "None"
 		))
 		build_map(ipList, result)
-		p.saveFile(issue, 'locations', result)
+		p.saveFile(issue, 'locations', result, date)
 
 	return JsonResponse(result, safe=False)
 

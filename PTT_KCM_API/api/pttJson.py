@@ -43,7 +43,7 @@ class pttJson(object):
 		return self.articleLists
 
 	def getIssueFilePath(self, issue, typeOfFile, date):
-		return '{}/{}/{}.json.{}.{}'.format(self.dirPath, issue, issue, typeOfFile, date.date())
+		return '{}/{}/{}.json.{}.{}'.format(self.dirPath, issue, issue, typeOfFile, str(date.year)+'-'+str(date.month) if date.date() != datetime.today().date() else 'all')
 
 	def getIssueFolderPath(self, issue):
 		return '{}/{}'.format(self.dirPath, issue)
