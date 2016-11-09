@@ -1,4 +1,5 @@
-import json, requests, os, time, random
+import json, requests, os, time, random, re
+from datetime import datetime, date
 from PTT_KCM_API.models import IpTable, IP
 from PTT_KCM_API.dbip_apiKey import apiKey
 from pathlib import Path
@@ -18,6 +19,20 @@ class pttJson(object):
 		self.json = self.__get_pttJson()
 		self.dirPath = 'PTT_KCM_API/json'
 		self.InputdirPath = 'PTT_KCM_API/RawIpInput/'
+		self.Month2Num = {
+			"Jan" : 1,
+			"Feb" : 2,
+			"Mar" : 3,
+			"Apr" : 4,
+			"May" : 5,
+			"Jun" : 6,
+			"Jul" : 7,
+			"Aug" : 8,
+			"Sep" : 9,
+			"Oct" : 10,
+			"Nov" : 11,
+			"Dec" : 12
+		}
 
 	def __get_pttJson(self):
 		with open(self.filePath, 'r', encoding='utf8') as f:
@@ -27,34 +42,39 @@ class pttJson(object):
 	def get_articles(self):
 		return self.articleLists
 
-	def getIssueFilePath(self, issue, type):
-		return '{}/{}/{}.json.{}'.format(self.dirPath, issue, issue, type)
+	def getIssueFilePath(self, issue, typeOfFile, date):
+		return '{}/{}/{}.json.{}.{}'.format(self.dirPath, issue, issue, typeOfFile, date.date())
 
 	def getIssueFolderPath(self, issue):
 		return '{}/{}'.format(self.dirPath, issue)
 
-	def fileter_with_issue(self, issue, type = "articles"):
+	def fileter_with_issue(self, issue, date, typeOfFile = "articles"):
 		self.articleLists = []
+		start = False if date.date() != datetime.today().date() else True
+
 		for i in self.json['articles']:
 			try:
-				if issue in i.get('article_title', '') or issue in i.get('content', ''):
-					self.articleLists.append(i)
+				pttDate = re.split('\s+', i.get('date', ''))
+				if start or (date.month == int(self.Month2Num[pttDate[1]]) and date.year == int(pttDate[-1])):
+					start = True
+					if issue in i.get('article_title', '') or issue in i.get('content', ''):
+						self.articleLists.append(i)
 			except Exception as e:
 				with open('error.log', 'a', encoding='utf8') as f:
-					f.write(str(e))
+					f.write(str(e)+'\n')
 					f.write('---------------------------------\n')
-					f.write(str(i))
+					f.write(str(i)+'\n')
 
-	def saveFile(self, issue, type, file):
-		with open(self.getIssueFilePath(issue, type), 'w', encoding='utf8') as f:
+	def saveFile(self, issue, typeOfFile, file, date):
+		with open(self.getIssueFilePath(issue, typeOfFile, date), 'w', encoding='utf8') as f:
 			json.dump(file, f)
 
 	def loadFile(self, filePath):
 		with open(filePath, 'r', encoding='utf8') as f:
 			return json.load(f)
 
-	def hasFile(self, issue, type):
-		file = Path(self.getIssueFilePath(issue, type))
+	def hasFile(self, issue, typeOfFile, date):
+		file = Path(self.getIssueFilePath(issue, typeOfFile, date))
 		if file.is_file():
 			return True
 		else: return False
