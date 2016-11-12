@@ -1,6 +1,6 @@
 from django.http import JsonResponse, Http404
 from django.urls import reverse
-from PTT_KCM_API.api.articles import queryString_required, date_proc
+from djangoApiDec.djangoApiDec import queryString_required, date_proc
 from PTT_KCM_API.models import IpTable
 from PTT_KCM_API.api.pttJson import pttJson
 from functools import wraps
