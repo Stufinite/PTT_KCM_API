@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from PTT_KCM_API.api.articles import articles
 from PTT_KCM_API.api.ip import ip
 from PTT_KCM_API.api.locations import locations
+from PTT_KCM_API.api.tfidf import tfidf
 from PTT_KCM_API.api.pttJson import pttJson
 # Create your views here.
 

@@ -33,6 +33,7 @@ class pttJson(object):
 			"Nov" : 11,
 			"Dec" : 12
 		}
+		self.length = len(self.json['articles'])
 
 	def __get_pttJson(self):
 		with open(self.filePath, 'r', encoding='utf8') as f:
