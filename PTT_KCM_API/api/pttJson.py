@@ -49,15 +49,15 @@ class pttJson(object):
 	def getIssueFolderPath(self, issue):
 		return '{}/{}'.format(self.dirPath, issue)
 
-	def fileter_with_issue(self, issue, date, typeOfFile = "articles"):
+	def filter_with_issue(self, issue, date, typeOfFile = "articles"):
 		self.articleLists = []
 		start = False if date.date() != datetime.today().date() else True
 
 		for i in self.json['articles']:
 			try:
 				pttDate = re.split('\s+', i.get('date', ''))
+				# \s : 比對任一個空白字元（White space character），等效於 [ \f\n\r\t\v]
 				if start or (date.month == int(self.Month2Num[pttDate[1]]) and date.year == int(pttDate[-1])):
-					start = True
 					if issue in i.get('article_title', '') or issue in i.get('content', ''):
 						self.articleLists.append(i)
 			except Exception as e:

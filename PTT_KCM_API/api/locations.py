@@ -1,7 +1,7 @@
 from django.http import JsonResponse, Http404
 from django.urls import reverse
 from functools import wraps
-from djangoApiDec.djangoApiDec import queryString_required, date_proc
+from djangoApiDec.djangoApiDec import queryString_required, date_proc, getJsonFromApi
 from PTT_KCM_API.dbip_apiKey import apiKey
 from PTT_KCM_API.models import IP
 from PTT_KCM_API.api.pttJson import pttJson
@@ -56,11 +56,8 @@ def locations(request, date):
 	if p.hasFile(issue, "locations", date):
 		result = p.loadFile(p.getIssueFilePath(issue, 'locations', date))
 	else:
-		urlPattern = reverse('PTT_KCM_API:ip')
-		apiURL = request.get_host() + urlPattern + "?issue={}".format(urllib.parse.quote(issue)) + ("&date={}".format(date.date()) if date.date() != datetime.today().date() else "")
-		jsonText = requests.get('http://' + apiURL)
-		jsonText = json.loads(jsonText.text)
-
+		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'ip', (('issue', issue, "date", date)))
+		
 		result = dict(
 			issue=issue,
 			map={}

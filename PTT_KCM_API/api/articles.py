@@ -19,10 +19,10 @@ def articles(request, date):
 	if p.hasFile(issue, 'articles', date):
 		p.articleLists = p.loadFile(p.getIssueFilePath(issue, 'articles', date))
 	elif os.path.exists(p.getIssueFolderPath(issue)):
-		p.fileter_with_issue(issue, date, 'articles')
+		p.filter_with_issue(issue, date, 'articles')
 		p.saveFile(issue, 'articles', p.articleLists, date)
 	else:
-		p.fileter_with_issue(issue, date, 'articles')
+		p.filter_with_issue(issue, date, 'articles')
 		os.makedirs(p.getIssueFolderPath(issue))
 		p.saveFile(issue, 'articles', p.articleLists, date)
 	return JsonResponse(p.get_articles(), safe=False)

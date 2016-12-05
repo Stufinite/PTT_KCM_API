@@ -79,11 +79,8 @@ def tfidf(request, date):
 						tags[i] = (tags[i]+pushtags[i])/2
 					else:
 						tags[i] = pushtags[i]
-			# tags = sorted(tags, key=lambda x:x[1])
-			# tags[:10]
-			########
 			tags = OrderedDict(sorted(tags.items(), key=lambda x:x[1], reverse=True)[:10])
-			#######
+
 			result['articleList'].append(
 				dict(
 					articleID=article['article_id'],
