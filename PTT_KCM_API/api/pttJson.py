@@ -136,14 +136,18 @@ def getUserID(IdStr):
 	return IdStr
 
 def Ip2City(ip):
-	dbip = requests.get('http://api.db-ip.com/v2/' + apiKey + '/' + ip)
+	dbip = requests.get('http://ip-api.com/json/' + ip)
 	dbip = json.loads(dbip.text)
+	if dbip['regionName'] == "":
+		city_name = dbip['city']
+	else:
+		city_name = dbip['regionName']
 	ipDict = dict(
 		ip = ip,
-		countryName = dbip['countryName'],
-		stateProv = dbip['stateProv'],
-		city = dbip['city'],
-		continentName = dbip['continentName']
+		countryName = dbip['country'],
+		stateProv = 'Taiwan Province',
+		city = city_name,
+		continentName = dbip['timezone']
 	)
 	time.sleep(5)
 	return ipDict
