@@ -7,4 +7,4 @@ with open('issue.txt', 'r', encoding='utf8') as f:
 		print(url)
 		re = requests.get(url)
 		# print(re.text)
-		print('finish')
+		# print('finish')

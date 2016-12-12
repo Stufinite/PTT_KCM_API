@@ -56,7 +56,7 @@ def locations(request, date):
 	if p.hasFile(issue, "locations", date):
 		result = p.loadFile(p.getIssueFilePath(issue, 'locations', date))
 	else:
-		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'ip', (('issue', issue, "date", date)))
+		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'ip', (('issue', issue),( "date", date.date())))
 		
 		result = dict(
 			issue=issue,

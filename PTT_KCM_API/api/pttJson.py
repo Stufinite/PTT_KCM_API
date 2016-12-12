@@ -57,6 +57,7 @@ class pttJson(object):
 			try:
 				pttDate = re.split('\s+', i.get('date', ''))
 				# \s : 比對任一個空白字元（White space character），等效於 [ \f\n\r\t\v]
+				if pttDate == ['']: continue
 				if start or (date.month == int(self.Month2Num[pttDate[1]]) and date.year == int(pttDate[-1])):
 					if issue in i.get('article_title', '') or issue in i.get('content', ''):
 						self.articleLists.append(i)
