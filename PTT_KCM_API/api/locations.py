@@ -17,24 +17,13 @@ def locations(request, date):
 		  "issue": "大巨蛋",
 		  "map": {
 		    "Taiwan": {
-		      "Taiwan": {
-		        "Fenjihu": {
-		          "score": 0, //  分數
-		          "attendee": 3 // 參與評論人數
-		        },
-		        "Fen-chi-hu": {
-		          "score": 0,
-		          "attendee": 1
-		        }
-		      },
-		      "Taichung City": {
-		        "Zhongkeng Village": {
-		          "score": 1.0,
-		          "attendee": 1
-		        }
+		      "Taipei City": {
+		        "positive": 2.75,
+		        "attendee": 3,
+		        "negative": 0
 		      }
 		    }
-		  },
+		  }
 		}
 
 	function:
@@ -103,15 +92,14 @@ def build_map(ipList, result):
 		if countryName != "Taiwan":
 			continue
 		result['map'].setdefault(countryName, {})
-		result['map'][countryName].setdefault(stateProv, {})
-		result['map'][countryName][stateProv].setdefault(city, dict(
+		result['map'][countryName].setdefault(stateProv, dict(
 			positive=0,
 			negative=0,
 			attendee=0
 		))
 
 		if score > 0:
-			result['map'][countryName][stateProv][city]['positive'] += score
+			result['map'][countryName][stateProv]['positive'] += score
 		else:
-			result['map'][countryName][stateProv][city]['negative'] += score
-		result['map'][countryName][stateProv][city]['attendee'] += 1
+			result['map'][countryName][stateProv]['negative'] += score
+		result['map'][countryName][stateProv]['attendee'] += 1
