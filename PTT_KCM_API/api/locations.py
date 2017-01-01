@@ -46,9 +46,7 @@ def locations(request, datetime):
 		result = p.getFromDB(issue, 'locations', datetime)
 	else:
 		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'ip', (('issue', issue),( "date", datetime.date())))
-		
 		result = dict(
-			issue=issue,
 			map={}
 		)
 
