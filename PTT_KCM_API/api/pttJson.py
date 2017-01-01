@@ -43,7 +43,6 @@ class pttJson(object):
 		return result
 
 	def __getCollect(self, typeOfFile):
-		print(typeOfFile)
 		if typeOfFile != 'locations' and typeOfFile != 'ip' and typeOfFile != 'articles':
 			raise Exception('typeOfFile ERROR')
 		return self.db[typeOfFile]
@@ -93,15 +92,14 @@ class pttJson(object):
 		cursor = collect.find({ "$and":[{'issue':issue}, {str(datetime.date()):{'$exists':True}}] }, {str(datetime.date()):1, '_id': False}).limit(1)
 		if cursor.count() == 0:
 			return {}
-		return list(cursor)[0][str(date)]
+		return list(cursor)[0][str(datetime.date())]
 
-	def hasFile(self, issue, typeOfFile, date):
-		from pathlib import Path
-		file = Path(self.getIssueFilePath(issue, typeOfFile, date))
-		if file.is_file():
-			return True
-		else: return False
-
+	def hasFile(self, issue, typeOfFile, datetime):
+		collect = self.__getCollect(typeOfFile)
+		cursor = collect.find({ "$and":[{'issue':issue}, {str(datetime.date()):{'$exists':True}}] }).limit(0)
+		if cursor.count() == 0:
+			return False
+		return True
 
 	def build_IpTable(self):
 		for i in self.json['articles']:
