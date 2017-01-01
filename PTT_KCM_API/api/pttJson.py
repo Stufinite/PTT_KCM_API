@@ -1,9 +1,8 @@
-import json, requests, os, time, random, re
+import json
 from datetime import datetime, date
 from PTT_KCM_API.models import IpTable, IP
 from PTT_KCM_API.dbip_apiKey import apiKey
-from pathlib import Path
-
+from pymongo import MongoClient
 
 class pttJson(object):
 	""" A pttJson object having api for web to query
@@ -13,7 +12,7 @@ class pttJson(object):
 	Returns:
 		ptt articles with specific issue.
 	"""
-	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json'):
+	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json', uri=None):
 		self.filePath = filePath
 		self.articleLists = ()
 		self.json = self.__get_pttJson()
@@ -34,11 +33,20 @@ class pttJson(object):
 			"Dec" : 12
 		}
 		self.length = len(self.json['articles'])
+		self.client = MongoClient(uri)
+		self.db = self.client['ptt']
+		self.collect = None
 
 	def __get_pttJson(self):
 		with open(self.filePath, 'r', encoding='utf8') as f:
 			result = json.load(f)
 		return result
+
+	def __getCollect(self, typeOfFile):
+		print(typeOfFile)
+		if typeOfFile != 'locations' and typeOfFile != 'ip' and typeOfFile != 'articles':
+			raise Exception('typeOfFile ERROR')
+		return self.db[typeOfFile]
 
 	def get_articles(self):
 		return self.articleLists
@@ -50,6 +58,7 @@ class pttJson(object):
 		return '{}/{}'.format(self.dirPath, issue)
 
 	def filter_with_issue(self, issue, date, typeOfFile = "articles"):
+		import re
 		self.articleLists = []
 		start = False if date.date() != datetime.today().date() else True
 
@@ -75,7 +84,19 @@ class pttJson(object):
 		with open(filePath, 'r', encoding='utf8') as f:
 			return json.load(f)
 
+	def save2DB(self, issue, typeOfFile, file, datetime):
+		collect = self._getCollect(typeOfFile)
+		collect.update({'issue':issue}, {'$set':{str(datetime.date()) : file}}, upsert=True)
+
+	def getFromDB(self, issue, typeOfFile, datetime):
+		collect = self._getCollect(typeOfFile)
+		cursor = collect.find({ "$and":[{'issue':issue}, {str(datetime.date()):{'$exists':True}}] }, {str(datetime.date()):1, '_id': False}).limit(1)
+		if cursor.count() == 0:
+			return {}
+		return list(cursor)[0][str(date)]
+
 	def hasFile(self, issue, typeOfFile, date):
+		from pathlib import Path
 		file = Path(self.getIssueFilePath(issue, typeOfFile, date))
 		if file.is_file():
 			return True
@@ -136,6 +157,7 @@ def getUserID(IdStr):
 	return IdStr
 
 def Ip2City(ip):
+	import time, requests
 	dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK2469C36HQB53H65RZ&ip=' + ip + '&format=JSON')
 	dbip = json.loads(dbip.text)
 	ipDict = dict(
@@ -149,6 +171,7 @@ def Ip2City(ip):
 	return ipDict
 
 def Ip2City_from_ipList(ip, key):
+	import random, time, requests
 	dbip = requests.get('http://api.db-ip.com/v2/' + key + '/' + ip)
 	try:
 		dbip = json.loads(dbip.text)
