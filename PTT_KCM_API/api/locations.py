@@ -10,7 +10,7 @@ from datetime import datetime, date
 
 @date_proc
 @queryString_required(['issue'])
-def locations(request, date):
+def locations(request, datetime):
 	""" Generate JSON with location. and score
 	Returns:
 		{
@@ -42,10 +42,10 @@ def locations(request, date):
   	"""
 	issue = request.GET['issue']
 	p = pttJson()
-	if p.hasFile(issue, "locations", date):
-		result = p.loadFile(p.getIssueFilePath(issue, 'locations', date))
+	if p.hasFile(issue, "locations", datetime):
+		result = p.loadFile(p.getIssueFilePath(issue, 'locations', datetime))
 	else:
-		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'ip', (('issue', issue),( "date", date.date())))
+		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'ip', (('issue', issue),( "date", datetime.date())))
 		
 		result = dict(
 			issue=issue,
@@ -61,7 +61,7 @@ def locations(request, date):
 				if i['ip'] != None and i['ip'] != "None"
 		))
 		build_map(ipList, result)
-		p.saveFile(issue, 'locations', result, date)
+		p.save2DB(issue, 'locations', result, datetime)
 
 	return JsonResponse(result, safe=False)
 
