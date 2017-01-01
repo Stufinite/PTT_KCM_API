@@ -43,7 +43,7 @@ def locations(request, datetime):
 	issue = request.GET['issue']
 	p = pttJson()
 	if p.hasFile(issue, "locations", datetime):
-		result = p.loadFile(p.getIssueFilePath(issue, 'locations', datetime))
+		result = p.getFromDB(issue, 'locations', datetime)
 	else:
 		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'ip', (('issue', issue),( "date", datetime.date())))
 		
