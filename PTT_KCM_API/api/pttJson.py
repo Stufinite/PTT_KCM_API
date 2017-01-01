@@ -85,11 +85,11 @@ class pttJson(object):
 			return json.load(f)
 
 	def save2DB(self, issue, typeOfFile, file, datetime):
-		collect = self._getCollect(typeOfFile)
+		collect = self.__getCollect(typeOfFile)
 		collect.update({'issue':issue}, {'$set':{str(datetime.date()) : file}}, upsert=True)
 
 	def getFromDB(self, issue, typeOfFile, datetime):
-		collect = self._getCollect(typeOfFile)
+		collect = self.__getCollect(typeOfFile)
 		cursor = collect.find({ "$and":[{'issue':issue}, {str(datetime.date()):{'$exists':True}}] }, {str(datetime.date()):1, '_id': False}).limit(1)
 		if cursor.count() == 0:
 			return {}
