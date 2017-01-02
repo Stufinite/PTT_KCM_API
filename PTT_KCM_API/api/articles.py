@@ -8,7 +8,7 @@ import json, re, os
 
 @date_proc
 @queryString_required(['issue'])
-def articles(request, date):
+def articles(request, datetime):
 	"""Generate list of term data source files
 	Returns:
 		if contains invalid queryString key, it will raise exception.
@@ -16,13 +16,9 @@ def articles(request, date):
 	p = pttJson()
 	issue = request.GET['issue']
 
-	if p.hasFile(issue, 'articles', date):
-		p.articleLists = p.loadFile(p.getIssueFilePath(issue, 'articles', date))
-	elif os.path.exists(p.getIssueFolderPath(issue)):
-		p.filter_with_issue(issue, date, 'articles')
-		p.saveFile(issue, 'articles', p.articleLists, date)
+	if p.hasFile(issue, 'articles', datetime):
+		p.articleLists = p.getFromDB(issue, 'articles', datetime)
 	else:
-		p.filter_with_issue(issue, date, 'articles')
-		os.makedirs(p.getIssueFolderPath(issue))
-		p.saveFile(issue, 'articles', p.articleLists, date)
+		p.filter_with_issue(issue, datetime, 'articles')
+		p.save2DB(issue, 'articles', p.articleLists, datetime)
 	return JsonResponse(p.get_articles(), safe=False)
