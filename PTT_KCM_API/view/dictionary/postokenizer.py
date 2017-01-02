@@ -7,8 +7,8 @@ Output format: output term array.
 import jieba
 import jieba.posseg as pseg
 
-jieba.load_userdict('dict.txt.big.txt')
-jieba.load_userdict("NameDict_Ch_v2")
+jieba.load_userdict('PTT_KCM_API/view/dictionary/dict.txt.big.txt')
+jieba.load_userdict("PTT_KCM_API/view/dictionary/NameDict_Ch_v2")
 def PosTokenizer(sentences, save=None, remove=None):
 	def InActionList(flag, List, action):
 		determine = True
