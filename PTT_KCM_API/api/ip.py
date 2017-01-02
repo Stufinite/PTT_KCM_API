@@ -55,7 +55,7 @@ def ip(request, datetime):
 		)
 		result['author'] = [ dict(
 			author=i['author'], 
-			# ip=get_IpofUser(i['ip'], i['author'].split()[0]) , 
+			ip=get_IpofUser(i['ip'], i['author'].split()[0]) , 
 			date=i['date'], 
 			score=get_score(i, i['article_title'])) for i in jsonText 
 		]
