@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render_to_response, render
 from django.utils import timezone # auto generate create time.
 from django.http import JsonResponse, Http404
-from PTT_KCM_API.api.pttJson import pttJson
+from PTT_KCM_API.view.pttJson import pttJson
 from functools import wraps
 from djangoApiDec.djangoApiDec import queryString_required, date_proc
 import json, re, os

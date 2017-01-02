@@ -2,7 +2,7 @@ from django.http import JsonResponse, Http404
 from django.urls import reverse
 from djangoApiDec.djangoApiDec import queryString_required, date_proc, getJsonFromApi
 from PTT_KCM_API.models import IpTable
-from PTT_KCM_API.api.pttJson import pttJson
+from PTT_KCM_API.view.pttJson import pttJson
 from functools import wraps
 from datetime import datetime, date
 import jieba.posseg as pseg
