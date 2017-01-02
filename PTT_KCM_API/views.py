@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 # import api from view directory
-from PTT_KCM_API.api.articles import articles
-from PTT_KCM_API.api.ip import ip
-from PTT_KCM_API.api.locations import locations
-from PTT_KCM_API.api.tfidf import tfidf
-from PTT_KCM_API.api.pttJson import pttJson
+from PTT_KCM_API.view.articles import articles
+from PTT_KCM_API.view.ip import ip
+from PTT_KCM_API.view.locations import locations
+from PTT_KCM_API.view.tfidf import tfidf
+from PTT_KCM_API.view.pttJson import pttJson
 # Create your views here.
+def buildArticel2DB(request):
+	
 
 def build_IpTable(request):
 	p = pttJson()
