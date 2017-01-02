@@ -9,7 +9,7 @@ from datetime import datetime, date
 
 @date_proc
 @queryString_required(['issue'])
-def ip(request, date):
+def ip(request, datetime):
 	"""Generate JSON has key of Issue, attendee, author.
 
 	Returns:
@@ -43,10 +43,10 @@ def ip(request, date):
 	"""
 	issue = request.GET['issue']
 	p = pttJson()
-	if p.hasFile(issue, "ip", date):
-		result = p.loadFile(p.getIssueFilePath(issue, 'ip', date))
+	if p.hasFile(issue, "ip", datetime):
+		result = p.getFromDB(issue, 'ip', datetime)
 	else:
-		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'articles', (('issue', issue),("date", date.date())))
+		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'articles', (('issue', issue),("date", datetime.date())))
 
 		result = dict(
 			issue=issue, 
@@ -55,7 +55,7 @@ def ip(request, date):
 		)
 		result['author'] = [ dict(
 			author=i['author'], 
-			ip=i['ip'], 
+			# ip=get_IpofUser(i['ip'], i['author'].split()[0]) , 
 			date=i['date'], 
 			score=get_score(i, i['article_title'])) for i in jsonText 
 		]
@@ -68,7 +68,7 @@ def ip(request, date):
 						score=get_score(j ,j['push_tag'])) 
 				)
 
-		p.saveFile(issue, 'ip', result, date)
+		p.save2DB(issue, 'ip', result, datetime)
 	return JsonResponse(result, safe=False)
 
 def get_score(obj, text):
