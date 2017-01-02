@@ -8,8 +8,19 @@ from PTT_KCM_API.view.locations import locations
 from PTT_KCM_API.view.tfidf import tfidf
 from PTT_KCM_API.view.pttJson import pttJson
 # Create your views here.
-def buildArticel2DB(request):
-	
+def buildArticle2DB(request, uri=None):
+	from pymongo import MongoClient
+	from PTT_KCM_API.view.dictionary.postokenizer import PosTokenizer
+	import json
+	client = MongoClient(uri)
+	db = client['ptt']
+	collect = db['articles']
+	f = json.load(open('ptt-web-crawler/HatePolitics-2-4.json', 'r', encoding='utf8'))
+	for i in f['articles']:
+		key = set(PosTokenizer(i['article_title'], ['n']))
+		key = key.union(PosTokenizer(i['content'], ['n']))
+		for k in key:
+			collect.update({'issue':k}, {'$push':{'articleID':i['article_id']}}, upsert=True)
 
 def build_IpTable(request):
 	p = pttJson()
