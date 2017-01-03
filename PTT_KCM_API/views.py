@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 # import api from view directory
 from PTT_KCM_API.view.articles import articles
@@ -16,17 +16,25 @@ def buildArticle2DB(request, uri=None):
 	db = client['ptt']
 	articlesCollect = db['articles']
 	IndexCollect = db['invertedIndex']
-	f = json.load(open('ptt-web-crawler/HatePolitics-2-4.json', 'r', encoding='utf8'))
+	articlesCollect.remove({})
+	IndexCollect.remove({})
+	key = dict()
+
+	f = json.load(open('ptt-web-crawler/HatePolitics-3400-3403.json', 'r', encoding='utf8'))
 	for i in f['articles']:
 		tmp = copy.deepcopy(i)
 		del tmp['article_id']
 		article = articlesCollect.update({'article_id':i['article_id']}, tmp, upsert = True)
 		objectID = article['upserted']
 
-		key = set(PosTokenizer(i['article_title'], ['n']))
-		key = key.union(PosTokenizer(i['content'], ['n']))
-		for k in key:
-			IndexCollect.update({'issue':k}, {'$push':{'objectID':objectID}}, upsert=True)
+		uniqueTerm = set(PosTokenizer(i['article_title'], ['n']))
+		uniqueTerm = uniqueTerm.union(PosTokenizer(i['content'], ['n']))
+		for k in uniqueTerm:
+			key.setdefault(k, []).append(objectID)
+
+	for k, v in key.items():
+		IndexCollect.update({'issue':k}, {'ObjectID':v, 'issue':k}, upsert=True)
+	return JsonResponse({"status":"success"})
 
 def build_IpTable(request):
 	p = pttJson()
