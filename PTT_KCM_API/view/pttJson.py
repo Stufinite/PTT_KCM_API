@@ -14,8 +14,6 @@ class pttJson(object):
 	"""
 	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json', uri=None):
 		self.filePath = filePath
-		self.articleLists = ()
-		self.json = self.__get_pttJson()
 		self.dirPath = 'PTT_KCM_API/json'
 		self.InputdirPath = 'PTT_KCM_API/RawIpInput/'
 		self.Month2Num = {
@@ -32,56 +30,35 @@ class pttJson(object):
 			"Nov" : 11,
 			"Dec" : 12
 		}
-		self.length = len(self.json['articles'])
 		self.client = MongoClient(uri)
 		self.db = self.client['ptt']
 		self.collect = None
-
-	def __get_pttJson(self):
-		with open(self.filePath, 'r', encoding='utf8') as f:
-			result = json.load(f)
-		return result
 
 	def __getCollect(self, typeOfFile):
 		if typeOfFile != 'locations' and typeOfFile != 'ip' and typeOfFile != 'articles':
 			raise Exception('typeOfFile ERROR')
 		return self.db[typeOfFile]
 
-	def get_articles(self):
-		return self.articleLists
-
-	def getIssueFilePath(self, issue, typeOfFile, date):
-		return '{}/{}/{}.json.{}.{}'.format(self.dirPath, issue, issue, typeOfFile, str(date.year)+'-'+str(date.month) if date.date() != datetime.today().date() else 'all')
-
-	def getIssueFolderPath(self, issue):
-		return '{}/{}'.format(self.dirPath, issue)
-
-	def filter_with_issue(self, issue, date, typeOfFile = "articles"):
+	def getArticleWithIssue(self, issue, date, typeOfFile = "articles"):
 		import re
-		self.articleLists = []
+		articleLists = []
 		start = False if date.date() != datetime.today().date() else True
 
-		for i in self.json['articles']:
+		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"objectID":1, '_id': False}).limit(1))[0]['objectID']:
+			art = list(self.db['articles'].find({"_id":i}, {'_id': False}).limit(1))[0]
 			try:
-				pttDate = re.split('\s+', i.get('date', ''))
+				pttDate = re.split('\s+', art.get('date', ''))
 				# \s : 比對任一個空白字元（White space character），等效於 [ \f\n\r\t\v]
 				if pttDate == ['']: continue
 				if start or (date.month == int(self.Month2Num[pttDate[1]]) and date.year == int(pttDate[-1])):
-					if issue in i.get('article_title', '') or issue in i.get('content', ''):
-						self.articleLists.append(i)
+					articleLists.append(art)
 			except Exception as e:
 				with open('error.log', 'a', encoding='utf8') as f:
 					f.write(str(e)+'\n')
 					f.write('---------------------------------\n')
 					f.write(str(i)+'\n')
 
-	def saveFile(self, issue, typeOfFile, file, date):
-		with open(self.getIssueFilePath(issue, typeOfFile, date), 'w', encoding='utf8') as f:
-			json.dump(file, f)
-
-	def loadFile(self, filePath):
-		with open(filePath, 'r', encoding='utf8') as f:
-			return json.load(f)
+		return articleLists
 
 	def save2DB(self, issue, typeOfFile, file, datetime):
 		collect = self.__getCollect(typeOfFile)
@@ -102,20 +79,21 @@ class pttJson(object):
 		return True
 
 	def build_IpTable(self):
-		for i in self.json['articles']:
+		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"objectID":1, '_id': False}).limit(1))[0]['objectID']:
+			art = list(self.db['articles'].find({"_id":i}, {'_id': False}).limit(1))[0]
 			try:
-				if  "error" not in i and i['ip'].find('.') != -1:
+				if  "error" not in art and art['ip'].find('.') != -1:
 					userObj, created = IpTable.objects.get_or_create(
 						userID = getUserID(i['author']),
 						defaults={ 
-							'userID' : getUserID(i['author']),
+							'userID' : getUserID(art['author']),
 							'mostFreqCity' : ""
 						}
 					)
 
 					ipObj, created = IP.objects.update_or_create(
-						ip = i['ip'],
-						defaults = Ip2City(i['ip'])
+						ip = art['ip'],
+						defaults = Ip2City(art['ip'])
 					)
 					userObj.ipList.add(ipObj)
 			except Exception as e:
