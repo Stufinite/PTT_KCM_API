@@ -11,16 +11,22 @@ from PTT_KCM_API.view.pttJson import pttJson
 def buildArticle2DB(request, uri=None):
 	from pymongo import MongoClient
 	from PTT_KCM_API.view.dictionary.postokenizer import PosTokenizer
-	import json
+	import json, copy
 	client = MongoClient(uri)
 	db = client['ptt']
-	collect = db['articles']
+	articlesCollect = db['articles']
+	IndexCollect = db['invertedIndex']
 	f = json.load(open('ptt-web-crawler/HatePolitics-2-4.json', 'r', encoding='utf8'))
 	for i in f['articles']:
+		tmp = copy.deepcopy(i)
+		del tmp['article_id']
+		article = articlesCollect.update({'article_id':i['article_id']}, tmp, upsert = True)
+		objectID = article['upserted']
+
 		key = set(PosTokenizer(i['article_title'], ['n']))
 		key = key.union(PosTokenizer(i['content'], ['n']))
 		for k in key:
-			collect.update({'issue':k}, {'$push':{'articleID':i['article_id']}}, upsert=True)
+			IndexCollect.update({'issue':k}, {'$push':{'objectID':objectID}}, upsert=True)
 
 def build_IpTable(request):
 	p = pttJson()
