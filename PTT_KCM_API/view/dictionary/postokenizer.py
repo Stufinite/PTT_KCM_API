@@ -25,7 +25,6 @@ def PosTokenizer(sentences, save=None, remove=None):
 	
 	words = pseg.cut(sentences)
 	for word, flag in words:
-		print(word)
 		if word != '\n':
 			if remove != None and InActionList(flag, remove, 'remove') != False:
 				result.append(word)

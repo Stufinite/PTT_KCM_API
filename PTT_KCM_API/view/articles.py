@@ -15,10 +15,4 @@ def articles(request, datetime):
 	"""
 	p = pttJson()
 	issue = request.GET['issue']
-
-	if p.hasFile(issue, 'articles', datetime):
-		p.articleLists = p.getFromDB(issue, 'articles', datetime)
-	else:
-		p.filter_with_issue(issue, datetime, 'articles')
-		p.save2DB(issue, 'articles', p.articleLists, datetime)
-	return JsonResponse(p.get_articles(), safe=False)
+	return JsonResponse(p.getArticleWithIssue(issue, datetime), safe=False)
