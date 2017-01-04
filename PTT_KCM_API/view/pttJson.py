@@ -14,7 +14,6 @@ class pttJson(object):
 	"""
 	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json', uri=None):
 		self.filePath = filePath
-		self.dirPath = 'PTT_KCM_API/json'
 		self.InputdirPath = 'PTT_KCM_API/RawIpInput/'
 		self.Month2Num = {
 			"Jan" : 1,
@@ -97,7 +96,7 @@ class pttJson(object):
 				city = dbip['geolocation_data']['city'],
 				continentName = dbip['geolocation_data']['continent_name']
 			)
-			time.sleep(5)
+			time.sleep(2)
 			return ipDict
 
 		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"objectID":1, '_id': False}).limit(1))[0]['objectID']:
