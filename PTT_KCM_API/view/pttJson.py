@@ -79,12 +79,33 @@ class pttJson(object):
 		return True
 
 	def build_IpTable(self):
+		def getUserID(IdStr):
+			index = IdStr.find('(')
+			if index != -1:
+				IdStr = IdStr[:index]
+			IdStr = IdStr.strip()
+			return IdStr
+
+		def Ip2City(ip):
+			import time, requests
+			dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK2469C36HQB53H65RZ&ip=' + ip + '&format=JSON')
+			dbip = json.loads(dbip.text)
+			ipDict = dict(
+				ip = ip,
+				countryName = dbip['geolocation_data']['country_name'],
+				stateProv = 'Taiwan Province',
+				city = dbip['geolocation_data']['city'],
+				continentName = dbip['geolocation_data']['continent_name']
+			)
+			time.sleep(5)
+			return ipDict
+
 		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"objectID":1, '_id': False}).limit(1))[0]['objectID']:
 			art = list(self.db['articles'].find({"_id":i}, {'_id': False}).limit(1))[0]
 			try:
 				if  "error" not in art and art['ip'].find('.') != -1:
 					userObj, created = IpTable.objects.get_or_create(
-						userID = getUserID(i['author']),
+						userID = getUserID(art['author']),
 						defaults={ 
 							'userID' : getUserID(art['author']),
 							'mostFreqCity' : ""
@@ -100,6 +121,23 @@ class pttJson(object):
 				print(e)
 
 	def build_IpTable_with_IpList(self, file, key):
+		def Ip2City_from_ipList(ip, key):
+			import random, time, requests
+			dbip = requests.get('http://api.db-ip.com/v2/' + key + '/' + ip)
+			try:
+				dbip = json.loads(dbip.text)
+				ipDict = dict(
+					ip = ip,
+					countryName = dbip['countryName'],
+					stateProv = dbip['stateProv'],
+					city = dbip['city'],
+					continentName = dbip['continentName']
+				)
+				time.sleep(random.randint(1,5))
+				return ipDict
+			except Exception as e:
+				pass
+
 		ipset = set()
 		with open(self.InputdirPath+file, 'r', encoding='utf8') as f:
 			for i in f:
@@ -115,7 +153,17 @@ class pttJson(object):
 			except Exception as e:
 				pass
 
-	def putIntoDB(self, ipjson,):
+	def putIntoDB(self, ipjson):
+		def ipGetFromJson(ipjson):
+			ipDict = dict(
+				ip = ipjson['ipAddress'],
+				countryName = ipjson['countryName'],
+				stateProv = ipjson['stateProv'],
+				city = ipjson['city'],
+				continentName = ipjson['continentName']
+			)
+			return ipDict
+
 		with open(self.InputdirPath+ipjson, 'r', encoding='utf8') as f:
 			dbip = json.load(f)
 			for ipjson in dbip:
@@ -124,51 +172,3 @@ class pttJson(object):
 					defaults = ipGetFromJson(ipjson)
 				)
 
-
-def getUserID(IdStr):
-	index = IdStr.find('(')
-	if index != -1:
-		IdStr = IdStr[:index]
-	IdStr = IdStr.strip()
-	return IdStr
-
-def Ip2City(ip):
-	import time, requests
-	dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK2469C36HQB53H65RZ&ip=' + ip + '&format=JSON')
-	dbip = json.loads(dbip.text)
-	ipDict = dict(
-		ip = ip,
-		countryName = dbip['geolocation_data']['country_name'],
-		stateProv = 'Taiwan Province',
-		city = dbip['geolocation_data']['city'],
-		continentName = dbip['geolocation_data']['continent_name']
-	)
-	time.sleep(5)
-	return ipDict
-
-def Ip2City_from_ipList(ip, key):
-	import random, time, requests
-	dbip = requests.get('http://api.db-ip.com/v2/' + key + '/' + ip)
-	try:
-		dbip = json.loads(dbip.text)
-		ipDict = dict(
-			ip = ip,
-			countryName = dbip['countryName'],
-			stateProv = dbip['stateProv'],
-			city = dbip['city'],
-			continentName = dbip['continentName']
-		)
-		time.sleep(random.randint(1,5))
-		return ipDict
-	except Exception as e:
-		pass
-
-def ipGetFromJson(ipjson):
-	ipDict = dict(
-		ip = ipjson['ipAddress'],
-		countryName = ipjson['countryName'],
-		stateProv = ipjson['stateProv'],
-		city = ipjson['city'],
-		continentName = ipjson['continentName']
-	)
-	return ipDict
