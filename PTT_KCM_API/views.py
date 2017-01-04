@@ -12,7 +12,7 @@ def buildArticle2DB(request, uri=None):
 	from pymongo import MongoClient
 	from PTT_KCM_API.view.dictionary.postokenizer import PosTokenizer
 	from PTT_KCM_API.trigger_cache.trigger_cache import trigger_cache
-	import json, copy, pyprind
+	import json, pyprind
 
 	client = MongoClient(uri)
 	db = client['ptt']
@@ -34,9 +34,7 @@ def buildArticle2DB(request, uri=None):
 		if i.get('article_id', None) == None:
 			continue
 
-		tmp = copy.deepcopy(i)
-		del tmp['article_id']
-		article = articlesCollect.update({'article_id':i['article_id']}, tmp, upsert = True)
+		article = articlesCollect.update({'article_id':i['article_id']}, i, upsert = True)
 		objectID = article['upserted']
 
 		uniqueTerm = set(PosTokenizer(i['article_title'], ['n']))
