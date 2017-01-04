@@ -12,7 +12,7 @@ def buildArticle2DB(request, uri=None):
 	from pymongo import MongoClient
 	from PTT_KCM_API.view.dictionary.postokenizer import PosTokenizer
 	from PTT_KCM_API.trigger_cache.trigger_cache import trigger_cache
-	import json, copy
+	import json, copy, pyprind
 
 	client = MongoClient(uri)
 	db = client['ptt']
@@ -20,11 +20,20 @@ def buildArticle2DB(request, uri=None):
 	IndexCollect = db['invertedIndex']
 	articlesCollect.remove({})
 	IndexCollect.remove({})
+	db['ip'].remove({})
+	db['locations'].remove({})
+
 	key = dict()
 	p = pttJson()
 
 	f = json.load(open(p.filePath, 'r', encoding='utf8'))
+	ProgreBar = pyprind.ProgBar(len(f['articles']))
 	for i in f['articles']:
+		ProgreBar.update(1, force_flush=True)
+
+		if i.get('article_id', None) == None:
+			continue
+
 		tmp = copy.deepcopy(i)
 		del tmp['article_id']
 		article = articlesCollect.update({'article_id':i['article_id']}, tmp, upsert = True)

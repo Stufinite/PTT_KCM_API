@@ -5,3 +5,4 @@ jieba==0.38
 pymongo==3.4.0
 requests==2.11.1
 simplejson==3.10.0
+PyPrind==2.9.9
