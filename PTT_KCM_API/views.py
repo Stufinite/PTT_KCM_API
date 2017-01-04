@@ -19,8 +19,9 @@ def buildArticle2DB(request, uri=None):
 	articlesCollect.remove({})
 	IndexCollect.remove({})
 	key = dict()
+	p = pttJson()
 
-	f = json.load(open('ptt-web-crawler/HatePolitics-3400-3403.json', 'r', encoding='utf8'))
+	f = json.load(open(p.filePath, 'r', encoding='utf8'))
 	for i in f['articles']:
 		tmp = copy.deepcopy(i)
 		del tmp['article_id']
