@@ -43,7 +43,7 @@ class pttJson(object):
 		articleLists = []
 		start = False if date.date() != datetime.today().date() else True
 
-		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"objectID":1, '_id': False}).limit(1))[0]['objectID']:
+		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"ObjectID":1, '_id': False}).limit(1))[0]['ObjectID']:
 			art = list(self.db['articles'].find({"_id":i}, {'_id': False}).limit(1))[0]
 			try:
 				pttDate = re.split('\s+', art.get('date', ''))
@@ -99,7 +99,7 @@ class pttJson(object):
 			time.sleep(2)
 			return ipDict
 
-		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"objectID":1, '_id': False}).limit(1))[0]['objectID']:
+		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"ObjectID":1, '_id': False}).limit(1))[0]['ObjectID']:
 			art = list(self.db['articles'].find({"_id":i}, {'_id': False}).limit(1))[0]
 			try:
 				if  "error" not in art and art['ip'].find('.') != -1:
