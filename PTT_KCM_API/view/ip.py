@@ -3,6 +3,7 @@ from django.urls import reverse
 from djangoApiDec.djangoApiDec import queryString_required, date_proc, getJsonFromApi
 from PTT_KCM_API.models import IpTable
 from PTT_KCM_API.view.pttJson import pttJson
+from project.settings_database import uri
 from functools import wraps
 import json, requests, urllib
 from datetime import datetime, date
@@ -42,7 +43,7 @@ def ip(request, datetime):
 		jsonText: json response getten from api.
 	"""
 	issue = request.GET['issue']
-	p = pttJson()
+	p = pttJson(uri=uri)
 	if p.hasFile(issue, "ip", datetime):
 		result = p.getFromDB(issue, 'ip', datetime)
 	else:
