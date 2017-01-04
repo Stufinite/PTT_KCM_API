@@ -11,7 +11,9 @@ from PTT_KCM_API.view.pttJson import pttJson
 def buildArticle2DB(request, uri=None):
 	from pymongo import MongoClient
 	from PTT_KCM_API.view.dictionary.postokenizer import PosTokenizer
+	from PTT_KCM_API.trigger_cache.trigger_cache import trigger_cache
 	import json, copy
+
 	client = MongoClient(uri)
 	db = client['ptt']
 	articlesCollect = db['articles']
@@ -35,6 +37,8 @@ def buildArticle2DB(request, uri=None):
 
 	for k, v in key.items():
 		IndexCollect.update({'issue':k}, {'ObjectID':v, 'issue':k}, upsert=True)
+
+	trigger_cache()
 	return JsonResponse({"status":"success"})
 
 def build_IpTable(request):
