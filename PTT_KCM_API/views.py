@@ -38,7 +38,7 @@ def buildArticle2DB(request, uri=None):
 			objectID = article['upserted']
 		else:
 			print('exists')
-			objectID = dict(list(cursor)[0])['article_id']
+			objectID = dict(list(cursor)[0])['_id']
 
 		uniqueTerm = set(PosTokenizer('' if i.get('article_title', '')==None else i.get('article_title', ''), ['n']))
 		uniqueTerm = uniqueTerm.union(PosTokenizer('' if i.get('content', '')==None else i.get('content', ''), ['n']))
