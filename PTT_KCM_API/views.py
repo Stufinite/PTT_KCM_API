@@ -40,8 +40,8 @@ def buildArticle2DB(request, uri=None):
 			print('exists')
 			objectID = dict(list(cursor)[0])['article_id']
 
-		uniqueTerm = set(PosTokenizer(i.get('article_title', ''), ['n']))
-		uniqueTerm = uniqueTerm.union(PosTokenizer(i.get('content', ''), ['n']))
+		uniqueTerm = set(PosTokenizer('' if i.get('article_title', '')==None else i.get('article_title', ''), ['n']))
+		uniqueTerm = uniqueTerm.union(PosTokenizer('' if i.get('content', '')==None else i.get('content', ''), ['n']))
 		for k in uniqueTerm:
 			key.setdefault(k, []).append(objectID)
 
