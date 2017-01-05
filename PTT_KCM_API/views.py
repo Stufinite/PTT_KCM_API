@@ -18,7 +18,6 @@ def buildArticle2DB(request, uri=None):
 	db = client['ptt']
 	articlesCollect = db['articles']
 	IndexCollect = db['invertedIndex']
-	articlesCollect.remove({})
 	IndexCollect.remove({})
 	db['ip'].remove({})
 	db['locations'].remove({})
@@ -27,18 +26,22 @@ def buildArticle2DB(request, uri=None):
 	p = pttJson()
 
 	f = json.load(open(p.filePath, 'r', encoding='utf8'))
-	ProgreBar = pyprind.ProgBar(len(f['articles']))
-	for i in f['articles']:
-		ProgreBar.update(1, force_flush=True)
+	for i in pyprind.prog_percent(f['articles']):
 
 		if i.get('article_id', None) == None:
 			continue
 
-		article = articlesCollect.update({'article_id':i['article_id']}, i, upsert = True)
-		objectID = article['upserted']
+		cursor = articlesCollect.find({'article_id':i['article_id']}).limit(1)
+		if cursor.count() ==0:
+			print('insert')
+			article = articlesCollect.update({'article_id':i['article_id']}, i, upsert = True)
+			objectID = article['upserted']
+		else:
+			print('exists')
+			objectID = dict(list(cursor)[0])['article_id']
 
-		uniqueTerm = set(PosTokenizer(i['article_title'], ['n']))
-		uniqueTerm = uniqueTerm.union(PosTokenizer(i['content'], ['n']))
+		uniqueTerm = set(PosTokenizer(i.get('article_title', ''), ['n']))
+		uniqueTerm = uniqueTerm.union(PosTokenizer(i.get('content', ''), ['n']))
 		for k in uniqueTerm:
 			key.setdefault(k, []).append(objectID)
 
