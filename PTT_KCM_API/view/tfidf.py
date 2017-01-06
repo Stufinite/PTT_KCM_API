@@ -9,14 +9,14 @@ from collections import OrderedDict
 
 import jieba.posseg as pseg
 import jieba.analyse
-jieba.analyse.set_stop_words("PTT_KCM_API/view/dictionary/stop_words.txt")
-jieba.analyse.set_idf_path("PTT_KCM_API/view/dictionary/idf.txt.big")
-jieba.load_userdict('PTT_KCM_API/view/dictionary/dict.txt.big.txt')
-jieba.load_userdict('PTT_KCM_API/view/dictionary/jieba_expandDict.txt')
 
 @date_proc
 @queryString_required(['issue'])
 def tfidf(request, datetime):
+	jieba.analyse.set_stop_words("PTT_KCM_API/view/dictionary/stop_words.txt")
+	jieba.analyse.set_idf_path("PTT_KCM_API/view/dictionary/idf.txt.big")
+	jieba.load_userdict('PTT_KCM_API/view/dictionary/dict.txt.big.txt')
+	jieba.load_userdict('PTT_KCM_API/view/dictionary/jieba_expandDict.txt')
 	"""Generate JSON has key TF-IDF value of specific issue.
 
 	Returns:
