@@ -5,13 +5,18 @@ from PTT_KCM_API.models import IpTable
 from PTT_KCM_API.view.pttJson import pttJson
 from functools import wraps
 from datetime import datetime, date
+from collections import OrderedDict
+
 import jieba.posseg as pseg
 import jieba.analyse
-from collections import OrderedDict
+jieba.analyse.set_stop_words("PTT_KCM_API/view/dictionary/stop_words.txt")
+jieba.analyse.set_idf_path("PTT_KCM_API/view/dictionary/idf.txt.big")
+jieba.load_userdict('PTT_KCM_API/view/dictionary/dict.txt.big.txt')
+jieba.load_userdict('PTT_KCM_API/view/dictionary/jieba_expandDict.txt')
 
 @date_proc
 @queryString_required(['issue'])
-def tfidf(request, date):
+def tfidf(request, datetime):
 	"""Generate JSON has key TF-IDF value of specific issue.
 
 	Returns:
@@ -52,18 +57,12 @@ def tfidf(request, date):
 	"""
 	issue = request.GET['issue']
 	p = pttJson()
-	if p.hasFile(issue, "tfidf", date):
-		result = p.loadFile(p.getIssueFilePath(issue, 'tfidf', date))
+	if p.hasFile(issue, "tfidf", datetime):
+		result = p.getFromDB(issue, 'tfidf', datetime)
 	else:
-		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'articles', (('issue', issue)))
-		jieba.analyse.set_stop_words("PTT_KCM_API/api/dictionary/stop_words.txt")
-		jieba.analyse.set_idf_path("PTT_KCM_API/api/dictionary/idf.txt.big")
-		jieba.load_userdict('PTT_KCM_API/api/dictionary/dict.txt.big.txt')
-		jieba.load_userdict('PTT_KCM_API/api/dictionary/jieba_expandDict.txt')
-
+		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'articles', (('issue', issue),("date", datetime.date())))
 		result = dict(
 			issue=issue,
-			totalDocs=p.length,
 			df={},
 			articleList=[]
 		)
@@ -72,21 +71,26 @@ def tfidf(request, date):
 			# messages = ( pseg.cut(['push_content']) for j in i['messages'])
 			# tf = set( i for i in content if i[0] in ['nr','n','x'] )
 			tags = dict(jieba.analyse.extract_tags(article['content'], topK=10, withWeight=True))
+			newtags  = {}
+			for i in tags:
+				if '.' not in i:
+					newtags[i] = tags[i]
+
 			for push in article['messages']:
 				pushtags = dict(jieba.analyse.extract_tags(push['push_content'], topK=10, withWeight=True))
 				for i in pushtags:
-					if i in tags:
-						tags[i] = (tags[i]+pushtags[i])/2
-					else:
-						tags[i] = pushtags[i]
-			tags = OrderedDict(sorted(tags.items(), key=lambda x:x[1], reverse=True)[:10])
+					if i in newtags and '.' not in i:
+						newtags[i] = (newtags[i]+pushtags[i])/2
+					elif '.' not in i:
+						newtags[i] = pushtags[i]
+			newtags = OrderedDict(sorted(newtags.items(), key=lambda x:x[1], reverse=True)[:10])
 
 			result['articleList'].append(
 				dict(
 					articleID=article['article_id'],
-					tfidf=tags
+					tfidf=newtags
 				)
 			)
 
-		p.saveFile(issue, 'tfidf', result, date)
+		p.save2DB(issue, 'tfidf', result, datetime)
 	return JsonResponse(result, safe=False)
