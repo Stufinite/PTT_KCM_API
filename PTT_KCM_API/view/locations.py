@@ -78,28 +78,26 @@ def build_map(ipList, result):
 		try:
 			ipresult = IP.objects.get(ip = ip)
 			countryName = ipresult.countryName
-			stateProv = ipresult.stateProv
 			city = ipresult.city
 
 		except Exception as e:
 			dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK2469C36HQB53H65RZ&ip=' + ip + '&format=JSON')
 			dbip = json.loads(dbip.text)
 			countryName = dbip['geolocation_data']['country_name'],
-			stateProv = 'Taiwan Province',
 			city = dbip['geolocation_data']['city'],
 			continentName = dbip['geolocation_data']['continent_name']
 
 		if countryName != "Taiwan":
 			continue
 		result['map'].setdefault(countryName, {})
-		result['map'][countryName].setdefault(stateProv, dict(
+		result['map'][countryName].setdefault(city, dict(
 			positive=0,
 			negative=0,
 			attendee=0
 		))
 
 		if score > 0:
-			result['map'][countryName][stateProv]['positive'] += score
+			result['map'][countryName][city]['positive'] += score
 		else:
-			result['map'][countryName][stateProv]['negative'] += score
-		result['map'][countryName][stateProv]['attendee'] += 1
+			result['map'][countryName][city]['negative'] += score
+		result['map'][countryName][city]['attendee'] += 1
