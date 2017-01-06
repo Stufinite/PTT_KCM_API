@@ -34,7 +34,7 @@ class pttJson(object):
 		self.collect = None
 
 	def __getCollect(self, typeOfFile):
-		if typeOfFile != 'locations' and typeOfFile != 'ip' and typeOfFile != 'articles':
+		if typeOfFile != 'locations' and typeOfFile != 'ip' and typeOfFile != 'articles' and typeOfFile!='tfidf':
 			raise Exception('typeOfFile ERROR')
 		return self.db[typeOfFile]
 
@@ -99,10 +99,9 @@ class pttJson(object):
 			time.sleep(2)
 			return ipDict
 
-		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"ObjectID":1, '_id': False}).limit(1))[0]['ObjectID']:
-			art = list(self.db['articles'].find({"_id":i}, {'_id': False}).limit(1))[0]
+		for art in self.db['articles'].find():
 			try:
-				if  "error" not in art and art['ip'].find('.') != -1:
+				if "error" not in art and art['ip'].find('.') != -1:
 					userObj, created = IpTable.objects.get_or_create(
 						userID = getUserID(art['author']),
 						defaults={ 
