@@ -69,7 +69,7 @@ def ip(request, datetime):
 						score=get_score(j ,j['push_tag'])) 
 				)
 
-		p.save2DB(issue, 'ip', result, datetime)
+		# p.save2DB(issue, 'ip', result, datetime)
 	return JsonResponse(result, safe=False)
 
 def get_score(obj, text):
