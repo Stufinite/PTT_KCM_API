@@ -31,7 +31,9 @@ def buildArticle2DB(request, uri=None):
 
 	articlesCollect.insert(f['articles'])
 
+	bar = pyprind.ProgBar( articlesCollect.find().count())
 	for i in articlesCollect.find():
+		bar.update()
 		if i.get('article_id', None) == None:
 			continue
 
