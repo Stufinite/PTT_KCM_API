@@ -87,12 +87,12 @@ class pttJson(object):
 
 		def Ip2City(ip):
 			import time, requests
-			dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK2469C36HQB53H65RZ&ip=' + ip + '&format=JSON')
+			dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK85EX8G465872S32TZ&ip=' + ip + '&format=JSON')
 			dbip = json.loads(dbip.text)
 			ipDict = dict(
 				ip = ip,
 				countryName = dbip['geolocation_data']['country_name'],
-				stateProv = 'Taiwan Province',
+				stateProv = 'Province',
 				city = dbip['geolocation_data']['city'],
 				continentName = dbip['geolocation_data']['continent_name']
 			)
