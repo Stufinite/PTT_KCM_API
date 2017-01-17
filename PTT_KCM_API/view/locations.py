@@ -5,7 +5,6 @@ from djangoApiDec.djangoApiDec import queryString_required, date_proc, getJsonFr
 from PTT_KCM_API.dbip_apiKey import apiKey
 from PTT_KCM_API.models import IP
 from PTT_KCM_API.view.pttJson import pttJson
-from project.settings_database import uri
 import json, requests, urllib
 from datetime import datetime, date
 
@@ -43,7 +42,7 @@ def locations(request, datetime):
 				score: the sentiment value caculated from social network.
   	"""
 	issue = request.GET['issue']
-	p = pttJson(uri=uri)
+	p = pttJson()
 	if p.hasFile(issue, "locations", datetime):
 		result = p.getFromDB(issue, 'locations', datetime)
 	else:

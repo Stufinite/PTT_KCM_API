@@ -3,6 +3,7 @@ from datetime import datetime, date
 from PTT_KCM_API.models import IpTable, IP
 from PTT_KCM_API.dbip_apiKey import apiKey
 from pymongo import MongoClient
+from project.settings_database import uri
 
 class pttJson(object):
 	""" A pttJson object having api for web to query
@@ -12,7 +13,7 @@ class pttJson(object):
 	Returns:
 		ptt articles with specific issue.
 	"""
-	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json', uri=None):
+	def __init__(self, filePath='ptt-web-crawler/HatePolitics-1-3499.json', uri=uri):
 		self.filePath = filePath
 		self.InputdirPath = 'PTT_KCM_API/RawIpInput/'
 		self.Month2Num = {

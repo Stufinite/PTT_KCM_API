@@ -8,7 +8,8 @@ from PTT_KCM_API.view.locations import locations
 from PTT_KCM_API.view.tfidf import tfidf
 from PTT_KCM_API.view.pttJson import pttJson
 # Create your views here.
-def buildArticle2DB(request, uri=None):
+def buildArticle2DB(request):
+	from project.settings_database import uri
 	from pymongo import MongoClient
 	from PTT_KCM_API.view.dictionary.postokenizer import PosTokenizer
 	from PTT_KCM_API.trigger_cache.trigger_cache import trigger_cache
