@@ -3,10 +3,9 @@ import urllib
 p=urllib.parse.quote('udic@720')
 
 MongoUri = {
-    "DEBUG":None,
-    "Production":'mongodb://140.120.13.243:27017'
+    "DEBUG":'mongodb://udic:'+p+'@140.120.13.243:27017',
+    "Production":'mongodb://udic:'+p+'@140.120.13.243:27017'
 }
-
 if DEBUG:
     uri = MongoUri['DEBUG']
 else:

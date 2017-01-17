@@ -14,7 +14,6 @@ def buildArticle2DB(request):
 	from PTT_KCM_API.view.dictionary.postokenizer import PosTokenizer
 	from PTT_KCM_API.trigger_cache.trigger_cache import trigger_cache
 	import json, pyprind, pymongo
-
 	client = MongoClient(uri)
 	db = client['ptt']
 	articlesCollect = db['articles']
