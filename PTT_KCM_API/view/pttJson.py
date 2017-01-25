@@ -61,19 +61,25 @@ class pttJson(object):
 		return articleLists
 
 	def save2DB(self, issue, typeOfFile, file, datetime):
+		datetime = 'all' if datetime.date() == datetime.today().date()  else str(datetime.date())
+
 		collect = self.__getCollect(typeOfFile)
-		collect.update({'issue':issue}, {'$set':{str(datetime.date()) : file}}, upsert=True)
+		collect.update({'issue':issue}, {'$set':{datetime : file}}, upsert=True)
 
 	def getFromDB(self, issue, typeOfFile, datetime):
+		datetime = 'all' if datetime.date() == datetime.today().date()  else str(datetime.date())
+
 		collect = self.__getCollect(typeOfFile)
-		cursor = collect.find({ "$and":[{'issue':issue}, {str(datetime.date()):{'$exists':True}}] }, {str(datetime.date()):1, '_id': False}).limit(1)
+		cursor = collect.find({ "$and":[{'issue':issue}, {datetime:{'$exists':True}}] }, {datetime:1, '_id': False}).limit(1)
 		if cursor.count() == 0:
 			return {}
-		return list(cursor)[0][str(datetime.date())]
+		return list(cursor)[0][datetime]
 
 	def hasFile(self, issue, typeOfFile, datetime):
+		datetime = 'all' if datetime.date() == datetime.today().date()  else str(datetime.date())
+
 		collect = self.__getCollect(typeOfFile)
-		cursor = collect.find({ "$and":[{'issue':issue}, {str(datetime.date()):{'$exists':True}}] }).limit(0)
+		cursor = collect.find({ "$and":[{'issue':issue}, {datetime:{'$exists':True}}] }).limit(0)
 		if cursor.count() == 0:
 			return False
 		return True

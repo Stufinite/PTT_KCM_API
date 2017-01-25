@@ -1,10 +1,131 @@
-# PTT_KCM_API (Ê¹ÓÃKCM®”×÷PTTÎÄÕÂ²éÔƒË÷ÒıµÄAPI)[![Build Status](https://travis-ci.org/UDICatNCHU/PTT_KCM_API.svg?branch=master)](https://travis-ci.org/UDICatNCHU/PTT_KCM_API)
+# PTT_KCM_API (ä½¿ç”¨KCMç•¶ä½œPTTæ–‡ç« æŸ¥è©¢ç´¢å¼•çš„API)[![Build Status](https://travis-ci.org/UDICatNCHU/PTT_KCM_API.svg?branch=master)](https://travis-ci.org/UDICatNCHU/PTT_KCM_API)
 
-Ê¹ÓÃ **jwline** Œ×÷µÄ[PTTÅÀÏx](https://github.com/jwlin/ptt-web-crawler)
+ä½¿ç”¨ **jwline** å¯¦ä½œçš„[PTTçˆ¬èŸ²](https://github.com/jwlin/ptt-web-crawler)  
+å¯¦ä½œåˆä¸€å€‹å¯ä»¥ç”¨getå”å®šå»æŸ¥è©¢çš„APIï¼Œè‹¥é—œéµå­—ä¸å­˜åœ¨  
+å‰‡ä½¿ç”¨KCMï¼ˆå¯¦ä½œä¸­ï¼‰æ‰¾å‡ºæœ€ç›¸é—œçš„å­—å»åšæŸ¥è©¢
 
-Œ×÷³õÒ»‚€¿ÉÒÔÓÃget…f¶¨È¥²éÔƒµÄAPI£¬ÈôêPæI×Ö²»´æÔÚ
+### API usage and Results
 
-„tÊ¹ÓÃKCMÕÒ³ö×îÏàêPµÄ×ÖÈ¥×ö²éÔƒ
+APIä½¿ç”¨æ–¹å¼ï¼ˆä¸‹é¢æ‰€å¯«çš„æ˜¯apiçš„URL patternï¼‰  
+(Usage of API (pattern written below is URL pattern))ï¼š
+
+##### parameter
+
+* `issue`ï¼šApi will search and calculate on specific issue.
+* `date`(optional)ï¼šYou get results from specified Month or Year. e.g. `/PTT_KCM_API/api/locations/?issue=é¦¬è‹±ä¹&date=2016-3` means return locations result which happened from `2016-3-01` to `2016-03-31` (Defaultï¼š`All information on this issue`)
+
+##### url pattern
+
+APIä½¿ç”¨æ–¹å¼ï¼ˆä¸‹é¢æ‰€å¯«çš„æ˜¯apiçš„URL patternï¼‰ï¼š
+
+1. *`PTT_KCM_API/api/articles/?issue=<>`*  
+  å–å¾—ç‰¹å®šä¸»é¡Œçš„`PTTæ–‡ç« `ï¼š    
+  * ç¯„ä¾‹ï¼š`PTT_KCM_API/api/articles/?issue=ç‡ˆè¿·`
+  * reeulstï¼š
+
+    ```
+    [
+      {
+        "content": "åœ‹æ°‘é»¨ç”¢çµ‚æ–¼æ¼å‡ºç ´å£ï¼Œå…†è±éŠ€æ´—éŒ¢è¢«ç¾åœ‹æŠ“åŒ…ï¼Œå†æ‰¯å‡ºå·´æ‹¿é¦¬æ–‡ä»¶ä¸­å‡ºç¾å…«å€‹ åœ‹æ°‘é»¨çš„æ´—éŒ¢å¸³æˆ¶ï¼Œå…¶ä¸­å››å€‹çš„åœ°å€å°±è¨­åœ¨åœ‹æ°‘é»¨ä¸­å¤®é»¨éƒ¨ã€‚ æ­¤æ¡ˆé¦¬åœ¨ä»»æ™‚ä¾¿å·²çˆ†ç™¼ï¼Œéš±çäº†å¥½å¹¾å€‹æœˆï¼Œçµ‚æ–¼ç´™åŒ…ä¸ä½ç«ï¼Œå…†è±é‡‘æº–å‚™äººäº‹ å¤§åœ°éœ‡å§ã€‚ åœ‹æ°‘é»¨ç¹¼çºŒå†å³å˜›ï¼Œå°‡8000å„„è®Šæˆ200å„„ï¼Œç„¶å¾Œèªªå¿«ç ´ç”¢ï¼ŒåŸä¾†æ˜¯åœ¨äº”é¬¼æ¬é‹ï¼Œæ´—éŒ¢ æ¡ˆçš„åœ°é›·å°‡ä¸€ä¸€çˆ†é–‹ï¼Œ200å„„å°‡å†è®Šå›8000å„„ã€‚ æ­¤æ¡ˆç‰¹åµçµ„è«‹é é‚Šç«™ï¼Œä½ å€‘é‡åˆ°åœ‹æ°‘é»¨å°±åªæœƒç‰½çµï¼Œå·²è¢«çœ‹ç ´æ‰‹è…³äº†ï¼Œä½•æ³é€™ä¹Ÿä¸ æ˜¯ç‰¹åµçµ„çš„è½„å€ï¼Œè«‹å…¶ä»–å–®ç‚ºä¾†è¾¦ã€‚ é›»è¦–ä¸Šå°‡æœƒå†çœ‹åˆ°ï¼Œå­å…€å¤œåŠä»å•¼ç†Šï¼Œä¸ä¿¡é»¨ç”¢å–šä¸å›ï¼Œä¸€æ™‚èˆˆèµ·ä¾†ä¸€æ®µç‡ˆè¿·ã€‚ è¿·é¡Œ: å­å…€å¤œå•¼......æ‰“ä¸€ä¿—èªã€‚ . . . . . . . . . . è¿·åº•: é è…° (è¦åƒå¥¶äº†) ",
+        "article_title": "[è¨è«–] æ´—éŒ¢æ¡ˆèˆ‡åœ‹æ°‘é»¨é»¨ç”¢çš„ç ´å£",
+        "author": "fashionjack (ç¥å¥‡å‚‘å…‹)",
+        "board": "HatePolitics",
+        "message_conut": {
+          "all": 12,
+          "count": -1,
+          "neutral": 11,
+          "push": 0,
+          "boo": 1
+        },
+        "ip": "122.116.198.5",
+        "date": "Tue Aug 23 09:18:26 2016",
+        "messages": [
+          {
+            "push_content": "é»¨å·¥ï¼šå´©æ½°ï½æˆ‘çš„éŒ¢",
+            "push_userid": "WTF55665566",
+            "push_tag": "å™“",
+            "push_ipdatetime": "08/23 09:19"
+          },
+          {
+            "push_content": "ç¾åœ‹æœç„¶è³‡æœ¬ä¸»ç¾©ï¼Œç­‰ä½ ä¸ç•¶é»¨ç”¢æ¢ä¾‹éäº†ï¼Œè³ºå€‹å¹å“¨å­éŒ¢",
+            "push_userid": "vyjssm",
+            "push_tag": "â†’",
+            "push_ipdatetime": "08/23 09:34"
+          },
+        ],
+        "article_id": "M.1471915108.A.11D"
+      }
+    ]
+    ```
+
+2. *`PTT_KCM_API/api/ip/?issue=<>`*  
+  å–å¾—ç‰¹å®šä¸»é¡Œæ–‡ç« çš„åƒèˆ‡è€…ä»–å€‘çš„`IP`èˆ‡å°è­°é¡Œçš„`æ”¯æŒç¨‹åº¦`ï¼š
+  * ç¯„ä¾‹ï¼š`/PTT_KCM_API/api/ip/?issue=ç‡ˆè¿·`
+  * resultï¼š
+
+    ```
+    {
+      "attendee": [
+        {
+          "ip": '140.120.4.13',
+          "push_userid": "WTF55665566",
+          "score": -1,
+          "push_ipdatetime": "08/23 09:19"
+        },
+        {
+          "ip": null,
+          "push_userid": "vyjssm",
+          "score": 0,
+          "push_ipdatetime": "08/23 09:34"
+        },
+      ],
+      "author": [
+        {
+          "ip": "122.116.198.5",
+          "date": "Tue Aug 23 09:18:26 2016",
+          "author": "fashionjack (ç¥å¥‡å‚‘å…‹)",
+          "score": -1.0
+        }
+      ],
+      "issue": "ç‡ˆè¿·"
+    }
+    ```
+
+3. *`PTT_KCM_API/api/locations/?issue=<>`*   
+å–å¾—ç‰¹å®šä¸»é¡Œæ–‡ç« çš„åƒèˆ‡è€…å…¶`åœ°ç†ä½ç½®`èˆ‡å°è­°é¡Œçš„`æ”¯æŒç¨‹åº¦`ï¼š
+  * ç¯„ä¾‹ï¼š`/PTT_KCM_API/api/ip/?issue=ç‡ˆè¿·`
+  * resultï¼š
+
+    ```
+        {
+      "map": {
+        "Taiwan": {
+          "Taipei": {
+            "attendee": 664,
+            "positive": 428.34357561722715,
+            "negative": -166.3100122100122
+          },
+          "Kaohsiung": {
+            "attendee": 89,
+            "positive": 59.07366233697503,
+            "negative": -22.174242424242426
+          },
+          "Taitung": {
+            "attendee": 1,
+            "positive": 0,
+            "negative": -1
+          }
+          ...
+        }
+      }
+    }
+    ```
+
+
+
+
+
+
 
 ## Getting Started
 
@@ -12,11 +133,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisities
 
-1. OS£ºUbuntu / OSX would be nice
-2. environment£ºneed python3 `sudo apt-get update; sudo apt-get install; python3 python3-dev`
-3. Ê¹ÓÃÌ“”M­h¾³È¥°²Ñb±¾Ì×¼ş ( recommended ) £º`pip install virtualenv`
-  * ½¨Á¢Ì“”M­h¾³£¬È¡Ãû½Ğ×÷venv£º`virtualenv venv`
-  *  †¢„ÓÌ“”M­h¾³£¬ß@˜ÓÌ×¼ş¾Í•şÑbÔÚÄ¿ä›µ×ÏÂµÄvenvÙYÁÏŠA£º`. venv/bin/activate`
+1. OSï¼šUbuntu / OSX would be nice
+2. environmentï¼šneed python3 `sudo apt-get update; sudo apt-get install; python3 python3-dev`
+3. ä½¿ç”¨è™›æ“¬ç’°å¢ƒå»å®‰è£æœ¬å¥—ä»¶ ( recommended ) ï¼š`pip install virtualenv`
+  * å»ºç«‹è™›æ“¬ç’°å¢ƒï¼Œå–åå«ä½œvenvï¼š`virtualenv venv`
+  *  å•Ÿå‹•è™›æ“¬ç’°å¢ƒï¼Œé€™æ¨£å¥—ä»¶å°±æœƒè£åœ¨ç›®éŒ„åº•ä¸‹çš„venvè³‡æ–™å¤¾ï¼š`. venv/bin/activate`
 
 ### Installing
 
@@ -31,91 +152,28 @@ make install
 ## Run
 
 
-1. ³õ´Î†¢„ÓĞèÒªÏÈÅÀPTTÙYÁÏ£º`make firstRunCrawler`
-2. †¢„ÓdjangoŒ£°¸£º`./manage.py runserver`
-3. é_†¢gÓ[Æ÷£¬İ”Èë£º `http://127.0.0.1:8000/PTT_KCM_API/build_IpTable/`
-  * ½¨Á¢PttÓÃ‘ôÅc°lÎÄµÄIPŒ¦ÕÕ±í
-4. é_†¢gÓ[Æ÷£¬™z²éÒ»ÏÂAPIÊÇ·ñÕı³£®a³öjsonÙYÁÏ
+1. åˆæ¬¡å•Ÿå‹•éœ€è¦å…ˆçˆ¬PTTè³‡æ–™ï¼š`make firstRunCrawler`
+2. å•Ÿå‹•djangoå°ˆæ¡ˆï¼š`./manage.py runserver`
+3. é–‹å•Ÿç€è¦½å™¨ï¼Œè¼¸å…¥ï¼š `http://127.0.0.1:8000/PTT_KCM_API/build_IpTable/`
+  * å»ºç«‹Pttç”¨æˆ¶èˆ‡ç™¼æ–‡çš„IPå°ç…§è¡¨
+4. é–‹å•Ÿç€è¦½å™¨ï¼Œæª¢æŸ¥ä¸€ä¸‹APIæ˜¯å¦æ­£å¸¸ç”¢å‡ºjsonè³‡æ–™
 
 ### Break down into end to end tests
 
 
-1. ˆÌĞĞÈ«²¿µÄœyÔ‡£º`make test`
-2. ·Ö„eœyÔ‡£º
-  * œyÔ‡pttÅÀÏx£º`cd ptt-web-crawler; python test.py`
-  * œyÔ‡PTT_KCM_API£º**ÉĞŸo**
+1. åŸ·è¡Œå…¨éƒ¨çš„æ¸¬è©¦ï¼š`make test`
+2. åˆ†åˆ¥æ¸¬è©¦ï¼š
+  * æ¸¬è©¦pttçˆ¬èŸ²ï¼š`cd ptt-web-crawler; python test.py`
+  * æ¸¬è©¦PTT_KCM_APIï¼š**å°šç„¡**
 
 ### And coding style tests
 
-Ä¿Ç°›]ÓĞcoding style tests...
-
-### API usage and Results
-
-APIÊ¹ÓÃ·½Ê½£¨ÏÂÃæËùŒ‘µÄÊÇapiµÄURL pattern£©£º
-
-1. È¡µÃÌØ¶¨Ö÷î}µÄPTTÎÄÕÂ£º `PTT_KCM_API/api/articles/?issue={Ö÷î}Ãû·Q}`
-  * ¹ Àı£º`PTT_KCM_API/api/articles/?issue=¹âÍ¹`
-  * reeulst£º
-    ```
-    [
-      {
-        "article_id": "M.1477366093.A.CF0",
-        "article_title": "[Ó‘Õ“] ½ñÌìÊÇÌ¨³¹âÍ¹&¹ÅŒî^‘ğÒÛ¼oÄîÈÕ",
-        "author": "McCain (éLóŒñRÎ²¿Ø)",
-        "board": "HatePolitics",
-        "content": "½ñÌìÊÇÌ¨³¹âÍ¹ ¸÷Î»ÓĞ·Å¼Ù†á?...",
-        "date": "Tue Oct 25 11:28:08 2016",
-        "ip": "114.45.182.54",
-        "message_conut": {
-          "all": 10,
-          "boo": 0,
-          "count": 5,
-          "neutral": 5,
-          "push": 5
-        },
-        "messages": [
-          {
-            "push_content": "¹âÍ¹? ß@‚€Ô~ÆäŒĞU¶à ×hµÄ",
-            "push_ipdatetime": "10/25 11:33",
-            "push_tag": "¡ú",
-            "push_userid": "Antler5566"
-          },
-          ...
-        ]
-      },
-    ```
-
-2. È¡µÃÌØ¶¨Ö÷î}ÎÄÕÂµÄ…¢ÅcÕßËû‚ƒµÄIPÅcŒ¦×hî}µÄÖ§³Ö³Ì¶È£º`PTT_KCM_API/api/ip/?issue={Ö÷î}Ãû·Q}`
-  * ¹ Àı£º`/PTT_KCM_API/api/ip/?issue=¹âÍ¹`
-  * result£º
-    ```
-    {
-      "issue": "¹âÍ¹",
-      "author": [
-        {
-          "date": "Tue Oct 25 11:28:08 2016",
-          "author": "McCain (éLóŒñRÎ²¿Ø)",
-          "ip": "114.45.182.54",
-          "score": -1
-        },
-        ...
-      ]
-      "attendee": [
-        {
-          "push_userid": "Antler5566",
-          "score": 1,
-          "ip": "140.120.4.13",
-          "push_ipdatetime": "10/25 11:33"
-        }
-        ...
-      ],
-    }
-    ```
+ç›®å‰æ²’æœ‰coding style tests...
 
 ## Deployment
 
 
-Ä¿Ç°Ö»ÊÇÒ»°ãµÄ **django** ³ÌÊ½£¬Ê¹ÓÃgunicorn»òÕßuwsgiÑÊğ¼´¿É
+ç›®å‰åªæ˜¯ä¸€èˆ¬çš„ **django** ç¨‹å¼ï¼Œä½¿ç”¨gunicornæˆ–è€…uwsgiä½ˆç½²å³å¯
 
 ## Built With
 
@@ -128,7 +186,7 @@ For the versions available, see the [tags on this repository](https://github.com
 
 ## Contributors
 
-* **ˆÌ©¬|** [david](https://github.com/david30907d)
+* **å¼µæ³°ç‘‹** [david](https://github.com/david30907d)
 
 ## License
 
@@ -136,4 +194,4 @@ This project is licensed under the **GNU 3.0** License - see the [LICENSE.md](LI
 
 ## Acknowledgments
 
-* ¸ĞÖx **jwline** Œ×÷µÄ[PTTÅÀÏx](https://github.com/jwlin/ptt-web-crawler)
+* æ„Ÿè¬ **jwline** å¯¦ä½œçš„[PTTçˆ¬èŸ²](https://github.com/jwlin/ptt-web-crawler)
