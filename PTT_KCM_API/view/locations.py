@@ -80,11 +80,7 @@ def build_map(ipList, result):
 			city = ipresult.city
 
 		except Exception as e:
-			dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK85EX8G465872S32TZ&ip=' + ip + '&format=JSON')
-			dbip = json.loads(dbip.text)
-			countryName = dbip['geolocation_data']['country_name'],
-			city = dbip['geolocation_data']['city'],
-			continentName = dbip['geolocation_data']['continent_name']
+			continue
 
 		if countryName != "Taiwan":
 			continue
