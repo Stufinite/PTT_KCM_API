@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'PTT_KCM_API',
-    'corsheaders',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -79,8 +78,16 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'PTT_IP_db',
+        'USER': 'j9963232q',
+        'PASSWORD': 'mysqlipdb',
+        'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '3306',
+        'OPTIONS': {
+          'autocommit': True,
+          'charset': 'utf8',
+        },
     }
 }
 
@@ -115,7 +122,8 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# mysql require "USE_TZ = False"
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

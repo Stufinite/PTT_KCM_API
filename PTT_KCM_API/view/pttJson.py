@@ -105,7 +105,7 @@ class pttJson(object):
 			)
 			time.sleep(2)
 			return ipDict
-
+			
 		for art in self.db['articles'].find():
 			try:
 				if "error" not in art and art['ip'].find('.') != -1:
