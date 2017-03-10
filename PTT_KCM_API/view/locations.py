@@ -7,6 +7,7 @@ from PTT_KCM_API.models import IP
 from PTT_KCM_API.view.pttJson import pttJson
 import json, requests, urllib
 from datetime import datetime, date
+from .ip import ip
 
 
 @date_proc
@@ -46,7 +47,7 @@ def locations(request, datetime):
 	if p.hasFile(issue, "locations", datetime):
 		result = p.getFromDB(issue, 'locations', datetime)
 	else:
-		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'ip', (('issue', issue),( "date", datetime.date())))
+		jsonText = getJsonFromApi(ip, request)
 		result = dict(
 			map={}
 		)
