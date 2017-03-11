@@ -3,6 +3,7 @@ install:
 	- pip install -r requirements.txt
 
 test:
+	- python manage.py test --setting=project.settings_test
 	- cd ptt-web-crawler; python test.py
 
 firstRunCrawler:

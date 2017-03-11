@@ -164,7 +164,8 @@ make install
 1. 執行全部的測試：`make test`
 2. 分別測試：
   * 測試ptt爬蟲：`cd ptt-web-crawler; python test.py`
-  * 測試PTT_KCM_API：**尚無**
+  * 測試PTT_KCM_API：`python manage.py test --setting=project.settings_test
+`
 
 ### And coding style tests
 
