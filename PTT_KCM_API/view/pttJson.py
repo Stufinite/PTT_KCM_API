@@ -95,8 +95,6 @@ class pttJson(object):
 		def Ip2City(ip):
 			import time, requests
 			dbip = getIPLocation(ip)
-			#dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAKA93BGVHLF2HC88UHZ&ip=' + ip + '&format=JSON')
-			#dbip = json.loads(dbip.text)
 			ipDict = dict(
 				ip = ip,
 				countryName = dbip['country_name'],
@@ -104,33 +102,33 @@ class pttJson(object):
 				city = dbip['city'],
 				continentName = 'AAA'
 			)
-			time.sleep(5)
+			time.sleep(3)
 			print("success!")
 			return ipDict
-			
+		cnt = 0
 		for art in self.db['articles'].find().batch_size(30):
-			# try:
 			try:
-				ip_find = IP.objects.get(ip = art['ip'])
-			except IP.DoesNotExist:
-				ip_find = None
-			if "error" not in art and art['ip'].find('.') != -1 and ip_find != None and ip_find.stateProv !="Taiwan Province":
-				userObj, created = IpTable.objects.get_or_create(
-					userID = getUserID(art['author']),
-					defaults={ 
-						'userID' : getUserID(art['author']),
-						'mostFreqCity' : ""
-					}
-				)
+				try:
+					ip_find = IP.objects.get(ip = art['ip'])
+				except IP.DoesNotExist:
+					ip_find = None
+				if "error" not in art and art['ip'].find('.') != -1 and (ip_find == None or (ip_find.stateProv !="Taiwan Province" and ip_find.continentName != 'AAA')):
+					userObj, created = IpTable.objects.get_or_create(
+						userID = getUserID(art['author']),
+						defaults={ 
+							'userID' : getUserID(art['author']),
+							'mostFreqCity' : ""
+						}
+					)
 
-				ipObj, created = IP.objects.update_or_create(
-					ip = art['ip'],
-					defaults = Ip2City(art['ip'])
-				)
-				userObj.ipList.add(ipObj)
-			# except Exception as e:
-			# 	print(e)
-			# 	print("error")
+					ipObj, created = IP.objects.update_or_create(
+						ip = art['ip'],
+						defaults = Ip2City(art['ip'])
+					)
+					userObj.ipList.add(ipObj)
+			except Exception as e:
+				print(e)
+				print("error")
 	def build_IpTable_with_IpList(self, file, key):
 		def Ip2City_from_ipList(ip, key):
 			import random, time, requests

@@ -6,6 +6,7 @@ from PTT_KCM_API.view.pttJson import pttJson
 from functools import wraps
 import json, requests, urllib
 from datetime import datetime, date
+from .articles import articles
 
 @date_proc
 @queryString_required(['issue'])
@@ -46,7 +47,7 @@ def ip(request, datetime):
 	if p.hasFile(issue, "ip", datetime):
 		result = p.getFromDB(issue, 'ip', datetime)
 	else:
-		jsonText = getJsonFromApi(request, 'http', 'PTT_KCM_API', 'articles', (('issue', issue),("date", datetime.date())))
+		jsonText = getJsonFromApi(articles, request)
 
 		result = dict(
 			issue=issue, 

@@ -72,24 +72,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+# Settings for our specific uses
 
 # Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'djangodb',
-        'USER': 'j9963232q',
-        'PASSWORD': 'mysqlipdb',
-        'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '3306',
-        'OPTIONS': {
-          'autocommit': True,
-          'charset': 'utf8',
-        },
-    }
-}
+# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+
+from .settings_database import DATABASE_SETTINGS
+if DEBUG:
+    DATABASES = DATABASE_SETTINGS['mysql']
+else:
+    DATABASES = DATABASE_SETTINGS['sqlite']
 
 
 # Password validation
