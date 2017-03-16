@@ -27,12 +27,12 @@ def buildArticle2DB(request):
 	articleList = []
 	p = pttJson()
 
-	f = json.load(open(p.filePath, 'r', encoding='utf8'))
+	f = json.load(open(p.filePath, 'r', encoding='utf-8-sig'))
 
 	articlesCollect.insert(f['articles'])
 
 	bar = pyprind.ProgBar( articlesCollect.find().count())
-	for i in articlesCollect.find():
+	for i in articlesCollect.find().batch_size(30):
 		bar.update()
 		if i.get('article_id', None) == None:
 			continue
@@ -40,7 +40,7 @@ def buildArticle2DB(request):
 		objectID = i['_id']
 		
 		uniqueTerm = set(PosTokenizer('' if i.get('article_title', '')==None else i.get('article_title', ''), ['n']))
-		uniqueTerm = uniqueTerm.union(PosTokenizer('' if i.get('content', '')==None else i.get('content', ''), ['n']))
+		uniqueTerm = uniqueTerm.union(PosTokenizer('' if i['content'].get('response', '')==None else i['content'].get('response', ''), ['n']))
 		for k in uniqueTerm:
 			key.setdefault(k, []).append(objectID)
 

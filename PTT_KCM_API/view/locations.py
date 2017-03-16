@@ -7,6 +7,7 @@ from PTT_KCM_API.models import IP
 from PTT_KCM_API.view.pttJson import pttJson
 import json, requests, urllib
 from datetime import datetime, date
+from PTT_KCM_API.view.ip_request import build_map
 
 
 @date_proc
@@ -64,39 +65,4 @@ def locations(request, datetime):
 
 	return JsonResponse(result, safe=False)
 
-def build_map(ipList, result):
-	''' Create map instance.
 
-	dbip: ip-location json return from dbip api.
-	
-	if clause: if key name (eq:台南) doesn't exist, then create dict with that key name and calculate score and attendee.
-	'''
-	for ip, score in ipList:
-		if score == 0:
-			continue
-		try:
-			ipresult = IP.objects.get(ip = ip)
-			countryName = ipresult.countryName
-			city = ipresult.city
-
-		except Exception as e:
-			dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK85EX8G465872S32TZ&ip=' + ip + '&format=JSON')
-			dbip = json.loads(dbip.text)
-			countryName = dbip['geolocation_data']['country_name'],
-			city = dbip['geolocation_data']['city'],
-			continentName = dbip['geolocation_data']['continent_name']
-
-		if countryName != "Taiwan":
-			continue
-		result['map'].setdefault(countryName, {})
-		result['map'][countryName].setdefault(city, dict(
-			positive=0,
-			negative=0,
-			attendee=0
-		))
-
-		if score > 0:
-			result['map'][countryName][city]['positive'] += score
-		else:
-			result['map'][countryName][city]['negative'] += score
-		result['map'][countryName][city]['attendee'] += 1
