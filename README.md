@@ -153,10 +153,11 @@ make install
 
 
 1. 初次啟動需要先爬PTT資料：`make firstRunCrawler`
-2. 啟動django專案：`./manage.py runserver`
-3. 開啟瀏覽器，輸入： `http://127.0.0.1:8000/PTT_KCM_API/build_IpTable/`
-  * 建立Ptt用戶與發文的IP對照表
-4. 開啟瀏覽器，檢查一下API是否正常產出json資料
+  * `python manage.py insertArticles`：把載下來的PTT匯入到mongodb
+2. `翔宇`：這邊給你補充步驟，理論上執行 `python manage.py buildIP` 就會把IP通通都匯進去，不過目前好像怪怪的
+3. `翔宇`：這邊給你補充步驟，理論上執行 `python manage.py cache` 就會透過 `PTT_KCM_API/management/commands/issue.txt` 裏面的名詞去做查詢，並且在伺服器建立 cache。
+4. 啟動django專案：`./manage.py runserver`
+5. 開啟瀏覽器，檢查一下API是否正常產出json資料
 
 ### Break down into end to end tests
 
