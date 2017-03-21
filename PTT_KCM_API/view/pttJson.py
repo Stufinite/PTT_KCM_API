@@ -105,7 +105,7 @@ class pttJson(object):
 			time.sleep(3)
 			print("success!")
 			return ipDict
-		cnt = 0
+	
 		for art in self.db['articles'].find().batch_size(30):
 			try:
 				try:
@@ -129,55 +129,3 @@ class pttJson(object):
 			except Exception as e:
 				print(e)
 				print("error")
-	def build_IpTable_with_IpList(self, file, key):
-		def Ip2City_from_ipList(ip, key):
-			import random, time, requests
-			dbip = requests.get('http://api.db-ip.com/v2/' + key + '/' + ip)
-			try:
-				dbip = json.loads(dbip.text)
-				ipDict = dict(
-					ip = ip,
-					countryName = dbip['countryName'],
-					stateProv = dbip['stateProv'],
-					city = dbip['city'],
-					continentName = dbip['continentName']
-				)
-				time.sleep(random.randint(1,5))
-				return ipDict
-			except Exception as e:
-				pass
-
-		ipset = set()
-		with open(self.InputdirPath+file, 'r', encoding='utf8') as f:
-			for i in f:
-				if i.find('.') != -1:
-					i = i.replace('\n','')
-					ipset.add(i)
-		for ip in ipset:
-			try:
-				ipObj, created = IP.objects.update_or_create(
-					ip = ip,
-					defaults = Ip2City_from_ipList(ip, key)
-				)
-			except Exception as e:
-				pass
-
-	def putIntoDB(self, ipjson):
-		def ipGetFromJson(ipjson):
-			ipDict = dict(
-				ip = ipjson['ipAddress'],
-				countryName = ipjson['countryName'],
-				stateProv = ipjson['stateProv'],
-				city = ipjson['city'],
-				continentName = ipjson['continentName']
-			)
-			return ipDict
-
-		with open(self.InputdirPath+ipjson, 'r', encoding='utf8') as f:
-			dbip = json.load(f)
-			for ipjson in dbip:
-				ipObj, created = IP.objects.update_or_create(
-					ip = ipjson['ipAddress'],
-					defaults = ipGetFromJson(ipjson)
-				)
-

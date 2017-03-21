@@ -64,18 +64,3 @@ def build_IpTable(request):
 	p = pttJson()
 	p.build_IpTable()
 	return HttpResponse("Build IpTable!!!")
-
-def build_IpTable_with_IpList(request):
-	if request.GET:
-		file = request.GET['file']
-		apiKey = request.GET['apiKey']
-		p = pttJson()
-		p.build_IpTable_with_IpList(file, apiKey)
-	return HttpResponse("Build IpTable with List {} and key {}!!!".format(file, apiKey))
-
-def putIntoDB(request):
-	if request.GET:
-		jsonfile = request.GET['file']
-		p = pttJson()
-		p.putIntoDB(jsonfile)
-	return HttpResponse("putIntoDB {} finish!!".format(jsonfile))
