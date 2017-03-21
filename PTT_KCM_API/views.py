@@ -33,7 +33,7 @@ def buildArticle2DB(request):
 	articlesCollect.insert(f['articles'])
 
 	bar = pyprind.ProgBar( articlesCollect.find().count())
-	for i in articlesCollect.find().batch_size(30):
+	for i in articlesCollect.find():
 		bar.update()
 		if i.get('article_id', None) == None:
 			continue
@@ -41,7 +41,7 @@ def buildArticle2DB(request):
 		objectID = i['_id']
 		
 		uniqueTerm = set(PosTokenizer('' if i.get('article_title', '')==None else i.get('article_title', ''), ['n']))
-		uniqueTerm = uniqueTerm.union(PosTokenizer('' if i['content'].get('response', '')==None else i['content'].get('response', ''), ['n']))
+		uniqueTerm = uniqueTerm.union(PosTokenizer('' if i.get('content', '')==None else i.get('content', ''), ['n']))
 		for k in uniqueTerm:
 			key.setdefault(k, []).append(objectID)
 

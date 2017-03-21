@@ -80,9 +80,9 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 from .settings_database import DATABASE_SETTINGS
 if DEBUG:
-    DATABASES = DATABASE_SETTINGS['mysql']
-else:
     DATABASES = DATABASE_SETTINGS['sqlite']
+else:
+    DATABASES = DATABASE_SETTINGS['mysql']
 
 
 # Password validation
