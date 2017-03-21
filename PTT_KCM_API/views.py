@@ -33,7 +33,14 @@ def buildArticle2DB(request):
 	articlesCollect.insert(f['articles'])
 
 	bar = pyprind.ProgBar( articlesCollect.find().count())
-	for i in articlesCollect.find():
+	for i in articlesCollect.find().batch_size(500):
+		# pymongo Cursor with timeout if time of query data exceed 10 minutes.
+		# so setting batch_size will fetch amount of document from mongo 
+		# in per query.
+		# But there is no universal "right" batch_size
+		# You should test with different values and see what is the appropriate value for your use case i.e. how many documents can you process in a 10 minute window.
+		# http://stackoverflow.com/questions/24199729/pymongo-errors-cursornotfound-cursor-id-not-valid-at-server
+
 		bar.update()
 		if i.get('article_id', None) == None:
 			continue
