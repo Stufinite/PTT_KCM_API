@@ -75,13 +75,14 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Settings for our specific uses
 
 # Database
+
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 from .settings_database import DATABASE_SETTINGS
 if DEBUG:
-    DATABASES = DATABASE_SETTINGS['sqlite']
-else:
     DATABASES = DATABASE_SETTINGS['mysql']
+else:
+    DATABASES = DATABASE_SETTINGS['sqlite']
 
 
 # Password validation

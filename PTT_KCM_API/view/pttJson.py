@@ -4,6 +4,7 @@ from PTT_KCM_API.models import IpTable, IP
 from PTT_KCM_API.dbip_apiKey import apiKey
 from pymongo import MongoClient
 from project.settings_database import uri
+from PTT_KCM_API.view.ip_request import getIPLocation
 
 class pttJson(object):
 	""" A pttJson object having api for web to query
@@ -83,7 +84,6 @@ class pttJson(object):
 		if cursor.count() == 0:
 			return False
 		return True
-
 	def build_IpTable(self):
 		def getUserID(IdStr):
 			index = IdStr.find('(')
@@ -94,21 +94,25 @@ class pttJson(object):
 
 		def Ip2City(ip):
 			import time, requests
-			dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAK85EX8G465872S32TZ&ip=' + ip + '&format=JSON')
-			dbip = json.loads(dbip.text)
+			dbip = getIPLocation(ip)
 			ipDict = dict(
 				ip = ip,
-				countryName = dbip['geolocation_data']['country_name'],
-				stateProv = 'Province',
-				city = dbip['geolocation_data']['city'],
-				continentName = dbip['geolocation_data']['continent_name']
+				countryName = dbip['country_name'],
+				stateProv = dbip['stateProv'],
+				city = dbip['city'],
+				continentName = 'AAA'
 			)
-			time.sleep(2)
+			time.sleep(3)
+			print("success!")
 			return ipDict
-			
-		for art in self.db['articles'].find():
+		cnt = 0
+		for art in self.db['articles'].find().batch_size(30):
 			try:
-				if "error" not in art and art['ip'].find('.') != -1:
+				try:
+					ip_find = IP.objects.get(ip = art['ip'])
+				except IP.DoesNotExist:
+					ip_find = None
+				if "error" not in art and art['ip'].find('.') != -1 and (ip_find == None or (ip_find.stateProv !="Taiwan Province" and ip_find.continentName != 'AAA')):
 					userObj, created = IpTable.objects.get_or_create(
 						userID = getUserID(art['author']),
 						defaults={ 
@@ -124,7 +128,7 @@ class pttJson(object):
 					userObj.ipList.add(ipObj)
 			except Exception as e:
 				print(e)
-
+				print("error")
 	def build_IpTable_with_IpList(self, file, key):
 		def Ip2City_from_ipList(ip, key):
 			import random, time, requests
