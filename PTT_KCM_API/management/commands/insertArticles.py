@@ -41,8 +41,8 @@ class Command(BaseCommand):
 
     		objectID = i['_id']
     		
-    		uniqueTerm = set(PosTokenizer('' if i.get('article_title', '')==None else i.get('article_title', ''), ['n']))
-    		uniqueTerm = uniqueTerm.union(PosTokenizer('' if i.get('content', '')==None else i.get('content', ''), ['n']))
+    		uniqueTerm = set(PosTokenizer('' if i.get('article_title', '')==None else i.get('article_title', ''), save=['n', 'l', 'eng']))
+    		uniqueTerm = uniqueTerm.union(PosTokenizer('' if i.get('content', '')==None else i.get('content', ''), save=['n', 'l', 'eng']))
     		for k in uniqueTerm:
     			key.setdefault(k, []).append(objectID)
 
