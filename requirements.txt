@@ -7,3 +7,4 @@ requests==2.11.1
 simplejson==3.10.0
 PyPrind==2.9.9
 bs4
+mysql-connector

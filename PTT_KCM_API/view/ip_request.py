@@ -39,6 +39,7 @@ def build_map(ipList, result):
 		else:
 			result['map'][countryName][city]['negative'] += score
 		result['map'][countryName][city]['attendee'] += 1
+	return result
 def getIPLocation(ip):
 	# sign in ip2location
 	userData = {

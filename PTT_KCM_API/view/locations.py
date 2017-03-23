@@ -48,7 +48,7 @@ def locations(request, datetime):
 	if p.hasFile(issue, "locations", datetime):
 		result = p.getFromDB(issue, 'locations', datetime)
 	else:
-		jsonText = getJsonFromApi(ip, request)
+		jsonText = getJsonFromApi(ip, request) 
 		result = dict(
 			map={}
 		)
@@ -61,7 +61,7 @@ def locations(request, datetime):
 			for i in jsonText['author']
 				if i['ip'] != None and i['ip'] != "None"
 		))
-		build_map(ipList, result)
+		result = build_map(ipList, result)
 		p.save2DB(issue, 'locations', result, datetime)
 
 	return JsonResponse(result, safe=False)
