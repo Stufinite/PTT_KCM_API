@@ -21,9 +21,16 @@ def build_map(ipList, result):
 
 		except Exception as e:
 			dbip = getIPLocation(ip)
+			ipDict = dict(
+				ip = ip,
+				countryName = dbip['country_name'],
+				stateProv = dbip['stateProv'],
+				city = dbip['city'],
+				continentName = 'AAA'
+			)
 			IP.objects.update_or_create(
 				ip = ip,
-				defaults = dbip
+				defaults = ipDict
 			)
 			#dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAKA93BGVHLF2HC88UHZ&ip=' + ip + '&format=JSON')
 			#dbip = json.loads(dbip.text)
