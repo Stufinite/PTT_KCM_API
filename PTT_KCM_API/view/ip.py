@@ -60,6 +60,7 @@ def ip(request, datetime):
 			date=i['date'], 
 			score=get_score(i, i['article_title'])) for i in jsonText 
 		]
+		
 		for i in jsonText:
 			for j in i['messages']:
 				result['attendee'].append( dict(

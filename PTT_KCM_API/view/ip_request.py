@@ -1,6 +1,7 @@
 import requests
 import sys
 from bs4 import BeautifulSoup
+from PTT_KCM_API.models import IP
 
 def build_map(ipList, result):
 	''' Create map instance.
@@ -15,18 +16,25 @@ def build_map(ipList, result):
 		try:
 			ipresult = IP.objects.get(ip = ip)
 			countryName = ipresult.countryName
+			stateProv = ipresult.stateProv,
 			city = ipresult.city
 
 		except Exception as e:
 			dbip = getIPLocation(ip)
+			IP.objects.update_or_create(
+				ip = ip,
+				defaults = dbip
+			)
 			#dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAKA93BGVHLF2HC88UHZ&ip=' + ip + '&format=JSON')
 			#dbip = json.loads(dbip.text)
-			countryName = dbip['country_name'],
-			city = dbip['city'],
+			countryName = dbip['country_name']
+			city = dbip['city']
+			stateProv = dbip['stateProv']
 			continentName = 'AAA'
 
 		if countryName != "Taiwan":
 			continue
+		
 		result['map'].setdefault(countryName, {})
 		result['map'][countryName].setdefault(city, dict(
 			positive=0,
