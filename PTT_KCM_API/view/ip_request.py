@@ -21,20 +21,11 @@ def build_map(ipList, result):
 
 		except Exception as e:
 			dbip = getIPLocation(ip)
-			ipDict = dict(
+			ipObj, created = IP.objects.update_or_create(
 				ip = ip,
-				countryName = dbip['country_name'],
-				stateProv = dbip['stateProv'],
-				city = dbip['city'],
-				continentName = 'AAA'
+				defaults = dbip
 			)
-			IP.objects.update_or_create(
-				ip = ip,
-				defaults = ipDict
-			)
-			#dbip = requests.get('http://api.eurekapi.com/iplocation/v1.8/locateip?key=SAKA93BGVHLF2HC88UHZ&ip=' + ip + '&format=JSON')
-			#dbip = json.loads(dbip.text)
-			countryName = dbip['country_name']
+			countryName = dbip['countryName']
 			city = dbip['city']
 			stateProv = dbip['stateProv']
 			continentName = 'AAA'
@@ -80,11 +71,11 @@ def getIPLocation(ip):
 	Location = soup.select('tr')[1].text.encode(sys.stdin.encoding, "replace").decode(sys.stdin.encoding)
 	Location = Location.split(",")
 	if len(Location) == 3:
-		dbip['country_name'] = Location[0].split()[1]
+		dbip['countryName'] = Location[0].split()[1]
 		dbip['stateProv'] = "unknown"
 		dbip['city'] = Location[2]
 	elif len(Location) == 4:
-		dbip['country_name'] = Location[0].split()[1]
+		dbip['countryName'] = Location[0].split()[1]
 		dbip['stateProv'] = Location[1]
 		dbip['city'] = Location[3]
 

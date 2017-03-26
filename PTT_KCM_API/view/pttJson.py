@@ -97,7 +97,7 @@ class pttJson(object):
 			dbip = getIPLocation(ip)
 			ipDict = dict(
 				ip = ip,
-				countryName = dbip['country_name'],
+				countryName = dbip['countryName'],
 				stateProv = dbip['stateProv'],
 				city = dbip['city'],
 				continentName = 'AAA'
