@@ -60,7 +60,7 @@ def ip(request, datetime):
 			date=i['date'], 
 			score=get_score(i, i['article_title'])) 
 			for i in jsonText 
-				if i['author'] != None and i['author'] != "None" and i['ip'] != None and i['ip'] != "None"
+				if i['author'] != None and i['author'] != "None"
 		]
 		
 		for i in jsonText:
@@ -100,10 +100,14 @@ def get_IpofUser(ip, userID):
 	if ip.find('.') != -1:
 		return ip
 	else:
-		ipt = IpTable.objects.filter(userID=userID)
-		if len(ipt) == 0:
-			return None
-		else:
-			ipt = ipt[0]
-			ipList = ipt.ipList.all()
-			return ipList[0].ip
+		try:
+			ipt = IpTable.objects.filter(userID=userID)
+			if len(ipt) == 0:
+				return None
+			else:
+				ipt = ipt[0]
+				ipList = ipt.ipList.all()
+				return ipList[0].ip
+		except Exception as e:
+			print(e)
+			print("error")
