@@ -83,7 +83,7 @@ def get_score(obj, text):
 	Else block: return score of author.
 
 	'''
-	if len(text) == 1:
+	if text != None and text!="None" and len(text) == 1:
 		if text == "噓":
 			return -1
 		elif text == "→":
