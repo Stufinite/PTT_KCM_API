@@ -60,7 +60,7 @@ def ip(request, datetime):
 			date=i['date'], 
 			score=get_score(i, i['article_title'])) 
 			for i in jsonText 
-				if i['author'] != None and i['author'] != "None"
+				if i['author'] != None and i['author'] != "None" and i['ip'] != None and i['ip'] != "None"
 		]
 		
 		for i in jsonText:

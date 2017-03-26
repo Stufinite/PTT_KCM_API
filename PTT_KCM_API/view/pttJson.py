@@ -110,7 +110,7 @@ class pttJson(object):
 			try:
 				try:
 					ip_find = IP.objects.get(ip = art['ip'])
-				except IP.DoesNotExist:
+				except Exception as e:
 					ip_find = None
 				if "error" not in art and art['ip'].find('.') != -1 and (ip_find == None or (ip_find.stateProv !="Taiwan Province" and ip_find.continentName != 'AAA')):
 					userObj, created = IpTable.objects.get_or_create(

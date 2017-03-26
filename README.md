@@ -154,10 +154,21 @@ make install
 
 1. 初次啟動需要先爬PTT資料：`make firstRunCrawler`
   * `python manage.py insertArticles`：把載下來的PTT匯入到mongodb
-2. `翔宇`：這邊給你補充步驟，理論上執行 `python manage.py buildIP` 就會把IP通通都匯進去，不過目前好像怪怪的
-3. `翔宇`：這邊給你補充步驟，理論上執行 `python manage.py cache` 就會透過 `PTT_KCM_API/management/commands/issue.txt` 裏面的名詞去做查詢，並且在伺服器建立 cache。
-4. 啟動django專案：`./manage.py runserver`
-5. 開啟瀏覽器，檢查一下API是否正常產出json資料
+2. 請將/PTT_KCM_API/venv/lib/python3.4/site-packages/mysql/connector/django/operations.py內的def bulk_insert_sql修改成
+```
+def bulk_insert_sql(self, fields, placeholder_rows):
+    """
+    Format the SQL for bulk insert
+    """
+    placeholder_rows_sql = (", ".join(row) for row in placeholder_rows)
+    values_sql = ", ".join("(%s)" % sql for sql in placeholder_rows_sql)
+    return "VALUES " + values_sql
+```
+3. 建立並寫入 model 到 mysql 資料庫 : `python manage.py makemigrations;python manage.py migrate;` 
+4. 將PTT文章內的發文者IP匯入資料庫 : `python manage.py buildIP` 
+5. 透過 `PTT_KCM_API/management/commands/issue.txt` 裏面的名詞去做查詢，並在伺服器建立 cache : `python manage.py cache` 
+6. 啟動django專案：`./manage.py runserver`
+7. 開啟瀏覽器，檢查一下API是否正常產出json資料
 
 ### Break down into end to end tests
 
