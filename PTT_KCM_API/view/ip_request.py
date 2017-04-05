@@ -74,9 +74,11 @@ def getIPLocation(ip):
 		dbip['countryName'] = Location[0].split()[1]
 		dbip['stateProv'] = "unknown"
 		dbip['city'] = Location[2].replace(" ","",1)
+		dbip['city'] = dbip['city'].replace("\n","")
 	elif len(Location) == 4:
 		dbip['countryName'] = Location[0].split()[1]
 		dbip['stateProv'] = Location[1].replace(" ","",1)
 		dbip['city'] = Location[3].replace(" ","",1)
+		dbip['city'] = dbip['city'].replace("\n","")
 
 	return dbip
