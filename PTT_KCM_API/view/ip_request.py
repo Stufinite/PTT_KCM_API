@@ -21,10 +21,6 @@ def build_map(ipList, result):
 
 		except Exception as e:
 			dbip = getIPLocation(ip)
-			ipObj, created = IP.objects.update_or_create(
-				ip = ip,
-				defaults = dbip
-			)
 			countryName = dbip['countryName']
 			city = dbip['city']
 			stateProv = dbip['stateProv']
@@ -81,4 +77,8 @@ def getIPLocation(ip):
 		dbip['city'] = Location[3].replace(" ","",1)
 		dbip['city'] = dbip['city'].replace("\n","")
 
+	ipObj, created = IP.objects.update_or_create(
+		ip = ip,
+		defaults = dbip
+	)
 	return dbip
