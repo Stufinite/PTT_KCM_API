@@ -9,6 +9,7 @@ import jieba.posseg as pseg
 
 jieba.load_userdict('PTT_KCM_API/view/dictionary/dict.txt.big.txt')
 jieba.load_userdict("PTT_KCM_API/view/dictionary/NameDict_Ch_v2")
+jieba.load_userdict("PTT_KCM_API/view/dictionary/鄉民擴充辭典.txt")
 def PosTokenizer(sentences, save=None, remove=None):
 	def InActionList(flag, List, action):
 		determine = True
