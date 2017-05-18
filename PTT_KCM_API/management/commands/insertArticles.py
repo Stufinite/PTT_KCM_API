@@ -1,9 +1,12 @@
 from django.core.management.base import BaseCommand, CommandError
-from PTT_KCM_API.view.pttJson import pttJson
 
 class Command(BaseCommand):
     help = 'use this for activating build_IpTable'
-    
+
+    def add_arguments(self, parser):
+        # Positional arguments
+        parser.add_argument('json', type=str)
+
     def handle(self, *args, **options):
     	from project.settings_database import uri
     	from pymongo import MongoClient
@@ -20,9 +23,8 @@ class Command(BaseCommand):
 
     	key = dict()
     	articleList = []
-    	p = pttJson()
 
-    	f = json.load(open(p.filePath, 'r', encoding='utf-8-sig'))
+    	f = json.load(open(options['json'], 'r', encoding='utf-8-sig'))
 
     	articlesCollect.insert(f['articles'])
 
