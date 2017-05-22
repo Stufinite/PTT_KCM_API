@@ -6,6 +6,7 @@ ptt-web-crawler/
 entrance/settings_database.py
 uwsgi.deploy.ini
 db.sqlite3
+after_request_page.txt
 
 # virtualenv
 venv

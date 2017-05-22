@@ -153,8 +153,9 @@ make install
 
 
 1. 初次啟動需要先爬PTT資料：
-  * `python -m PttWebCrawler -b 看板名稱 -i 起始索引 結束索引 (設為 -1 則自動計算最後一頁)`
+  * `python manage.py crawler 看板名稱 起始索引 結束索引 (設為 -1 則自動計算最後一頁)`
   * `python manage.py insertArticles ./XXX.json`：把載下來的PTT匯入到mongodb
+    * optional args: `--append True` 每次插入文章都會把mongoDB清空，--append則不會清空
 2. （For windows）請將/PTT_KCM_API/venv/lib/python3.4/site-packages/mysql/connector/django/operations.py內的def bulk_insert_sql修改成
 ```
 def bulk_insert_sql(self, fields, placeholder_rows):
