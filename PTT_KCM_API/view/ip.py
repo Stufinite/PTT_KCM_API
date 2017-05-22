@@ -6,6 +6,7 @@ from PTT_KCM_API.view.pttJson import pttJson
 from functools import wraps
 import json, requests, urllib
 from datetime import datetime, date
+from Swinger import Swinger
 from .articles import articles
 
 @date_proc
@@ -54,11 +55,14 @@ def ip(request, datetime):
 			attendee=[], 
 			author=[]
 		)
+		s = Swinger()
+		s.load('LogisticRegression') # 或是其他模型例如MultinomialNB
+
 		result['author'] = [ dict(
 			author=i['author'], 
 			ip=get_IpofUser(i['ip'], i['author'].split()[0]) , 
 			date=i['date'], 
-			score=get_score(i, i['article_title'])) 
+			score=1 if s.swing(i['content'])=='pos' else 0) 
 			for i in jsonText 
 				if i['author'] != None and i['author'] != "None"
 		]
@@ -69,32 +73,11 @@ def ip(request, datetime):
 						ip=get_IpofUser("", j['push_userid']), 
 						push_ipdatetime=j['push_ipdatetime'], 
 						push_userid=j['push_userid'], 
-						score=get_score(j ,j['push_tag'])) 
+						score=1 if s.swing(i['content'])=='pos' else 0) 
 				)
 
 		# p.save2DB(issue, 'ip', result, datetime)
 	return JsonResponse(result, safe=False)
-
-def get_score(obj, text):
-	'''Return the score of attitude toward a specific issue.
-
-	IF block: return score of comment.
-
-	Else block: return score of author.
-
-	'''
-	if text != None and text!="None" and len(text) == 1:
-		if text == "噓":
-			return -1
-		elif text == "→":
-			return 0
-		elif text == "推":
-			return 1
-	else:
-		try:
-			return obj['message_conut']['count']/(obj['message_conut']['push'] + obj['message_conut']['boo'])
-		except Exception as e:
-			return 0
 
 def get_IpofUser(ip, userID):
 	if ip.find('.') != -1:
