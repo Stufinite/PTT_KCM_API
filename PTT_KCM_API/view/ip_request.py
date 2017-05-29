@@ -77,6 +77,7 @@ def getIPLocation(ip):
 		dbip['city'] = Location[3].replace(" ","",1)
 		dbip['city'] = dbip['city'].replace("\n","")
 
+	dbip['city'] = dbip['city'].strip()
 	ipObj, created = IP.objects.update_or_create(
 		ip = ip,
 		defaults = dbip
