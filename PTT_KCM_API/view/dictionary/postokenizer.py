@@ -7,6 +7,7 @@ Output format: output term array.
 import jieba
 import jieba.posseg as pseg
 
+stopwords = json.load(open('PTT_KCM_API/view/stopwords/stopwords.json'), 'r')
 jieba.load_userdict('PTT_KCM_API/view/dictionary/dict.txt.big.txt')
 jieba.load_userdict("PTT_KCM_API/view/dictionary/NameDict_Ch_v2")
 jieba.load_userdict("PTT_KCM_API/view/dictionary/鄉民擴充辭典.txt")
@@ -32,3 +33,15 @@ def PosTokenizer(sentences, save=None, remove=None):
 			elif save != None and InActionList(flag, save, 'save'):
 				result.append(word)
 	return result
+
+def CutAndrmStopWords(sentence):
+    def condition(x):
+        x = list(x)
+        word, flag = x[0], x[1]
+        if len(word) > 1 and flag!='eng' and flag != 'm' and flag !='mq' and word not in stopwords:
+            return True
+        return False
+
+    result = filter(condition, pseg.cut(sentence))
+    result = map(lambda x:list(x)[0], result)
+    return list(result)
