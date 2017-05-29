@@ -4,10 +4,11 @@ language: python
 # sudo: required
 python:
   - 3.2
-  - 3.3 
+  - 3.3
   - 3.4
   - 3.5
 install:
-  - make install
+  - pip install -r requirements.txt
 script:
-  - make test
+  - python manage.py insertArticles testData/Hate-1000-1001.json 
+  - python manage.py test

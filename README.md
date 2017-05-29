@@ -1,8 +1,6 @@
-# PTT_KCM_API (使用KCM當作PTT文章查詢索引的API)[![Build Status](https://travis-ci.org/UDICatNCHU/PTT_KCM_API.svg?branch=master)](https://travis-ci.org/UDICatNCHU/PTT_KCM_API)
+# PTT_KCM_API (使用KCM當作PTT文章查詢索引的API)[![Build Status](https://travis-ci.org/Stufinite/PTT_KCM_API.svg?branch=master)](https://travis-ci.org/Stufinite/PTT_KCM_API)
 
-使用 **jwline** 實作的[PTT爬蟲](https://github.com/jwlin/ptt-web-crawler)  
-實作初一個可以用get協定去查詢的API，若關鍵字不存在  
-則使用KCM（實作中）找出最相關的字去做查詢
+一個透過[Swinger](https://github.com/UDICatNCHU/Swinger)去判斷鄉民留言情緒的api，藉由蒐集大量文章並且判斷情緒，達到迅速調查網路民調的效果。
 
 ### API usage and Results
 
@@ -141,16 +139,12 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
-```
-git clone https://github.com/UDICatNCHU/PTT_KCM_API.git
-make install
-```
+`pip install -r requirements.txt`
 
 
 ## Running & Testing
 
 ## Run
-
 
 1. 初次啟動需要先爬PTT資料：
   * `python manage.py crawler 看板名稱 起始索引 結束索引 (設為 -1 則自動計算最後一頁)`
@@ -176,12 +170,8 @@ def bulk_insert_sql(self, fields, placeholder_rows):
 
 ### Break down into end to end tests
 
-
-1. 執行全部的測試：`make test`
-2. 分別測試：
-  * 測試ptt爬蟲：`cd ptt-web-crawler; python test.py`
-  * 測試PTT_KCM_API：`python manage.py test --setting=project.settings_test
-`
+1. 先插入測試用文集(注意：此舉會先清空本地端的MongoDB)：`python manage.py insertArticles testData testData/Hate-1000-1001.json`
+2. run test：`python manage.py test`
 
 ### And coding style tests
 
