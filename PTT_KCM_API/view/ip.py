@@ -67,14 +67,20 @@ def ip(request, datetime):
 			for i in jsonText 
 				if i['author'] != None and i['author'] != "None"
 		]
+
+		# 因為本文是負,True代表要使用負負得正，
+		reverseFlag = list(map(lambda x:True if x['score'] == -1 else False, result['author']))
 		
-		for i in jsonText:
+		for i, zipflag in zip(jsonText, reverseFlag):
 			for j in i['messages']:
+				score = 1 if s.swingList(j['push_content'])=='pos' else -1
+				if zipflag:
+					score *= -1
 				result['attendee'].append( dict(
 						ip=get_IpofUser("", j['push_userid']), 
 						push_ipdatetime=j['push_ipdatetime'], 
 						push_userid=j['push_userid'], 
-						score=1 if s.swingList(j['push_content'])=='pos' else -1) 
+						score=score) 
 				)
 
 		# p.save2DB(issue, 'ip', result, datetime)
