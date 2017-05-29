@@ -62,7 +62,7 @@ def ip(request, datetime):
 			author=i['author'], 
 			ip=get_IpofUser(i['ip'], i['author'].split()[0]) , 
 			date=i['date'], 
-			score=1 if s.swing(i['content'])=='pos' else 0) 
+			score=1 if s.swingList(i['content'])=='pos' else -1) 
 			for i in jsonText 
 				if i['author'] != None and i['author'] != "None"
 		]
@@ -73,7 +73,7 @@ def ip(request, datetime):
 						ip=get_IpofUser("", j['push_userid']), 
 						push_ipdatetime=j['push_ipdatetime'], 
 						push_userid=j['push_userid'], 
-						score=1 if s.swing(i['content'])=='pos' else 0) 
+						score=1 if s.swingList(j['push_content'])=='pos' else -1) 
 				)
 
 		# p.save2DB(issue, 'ip', result, datetime)
