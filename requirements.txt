@@ -9,6 +9,4 @@ PyPrind==2.9.9
 bs4
 mysql-connector==2.1.4
 PttWebCrawler
-scipy
-numpy
 Swinger

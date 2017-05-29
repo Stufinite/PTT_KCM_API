@@ -44,7 +44,8 @@ class pttJson(object):
 		import re
 		articleLists = []
 		start = False if date.date() != datetime.today().date() else True
-
+		cursor = self.db['invertedIndex'].find({'issue':issue}, {"ObjectID":1, '_id': False}).limit(1)
+		if cursor.count() == 0:return []
 		for i in list(self.db['invertedIndex'].find({'issue':issue}, {"ObjectID":1, '_id': False}).limit(1))[0]['ObjectID']:
 			art = list(self.db['articles'].find({"_id":i}, {'_id': False}).limit(1))[0]
 			try:

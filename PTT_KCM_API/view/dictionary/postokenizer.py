@@ -35,13 +35,10 @@ def PosTokenizer(sentences, save=None, remove=None):
 	return result
 
 def CutAndrmStopWords(sentence):
-    def condition(x):
-        x = list(x)
-        word, flag = x[0], x[1]
-        if len(word) > 1 and flag!='eng' and flag != 'm' and flag !='mq' and word not in stopwords:
+    def condition(word):
+        if len(word) > 1 and word not in stopwords:
             return True
         return False
 
-    result = filter(condition, pseg.cut(sentence))
-    result = map(lambda x:list(x)[0], result)
+    result = filter(condition, jieba.cut(sentence))
     return list(result)

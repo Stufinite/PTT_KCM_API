@@ -1,7 +1,7 @@
 language: python
 # if command bellow need to executed in sudo
 # add this line.
-sudo: required
+# sudo: required
 python:
   - 3.5
   - 3.6

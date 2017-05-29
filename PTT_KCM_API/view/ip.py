@@ -9,6 +9,9 @@ from datetime import datetime, date
 from Swinger import Swinger
 from .articles import articles
 
+s = Swinger()
+s.load('LogisticRegression') # 或是其他模型例如MultinomialNB
+
 @date_proc
 @queryString_required(['issue'])
 def ip(request, datetime):
@@ -55,8 +58,6 @@ def ip(request, datetime):
 			attendee=[], 
 			author=[]
 		)
-		s = Swinger()
-		s.load('LogisticRegression') # 或是其他模型例如MultinomialNB
 
 		result['author'] = [ dict(
 			author=i['author'], 
