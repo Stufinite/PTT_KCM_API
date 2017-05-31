@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal
 
 # Create your models here.
 class IP(models.Model):
@@ -16,3 +17,13 @@ class IpTable(models.Model):
 	ipList = models.ManyToManyField(IP)
 	def __str__(self):
 		return self.userID
+
+class Ip2location(models.Model):
+	ip_from = models.DecimalField(max_digits=10, decimal_places=0)
+	ip_to = models.DecimalField(max_digits=10, decimal_places=0)
+	country_code = models.CharField(max_length=2)
+	countryName = models.CharField(max_length=64)
+	city = models.CharField(max_length=128)
+	area = models.CharField(max_length=128)
+	def __str__(self):
+		return self.ip_from

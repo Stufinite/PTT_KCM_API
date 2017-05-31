@@ -1,7 +1,7 @@
 import requests
 import sys
 from bs4 import BeautifulSoup
-from PTT_KCM_API.models import IP
+from PTT_KCM_API.models import IP,Ip2location
 
 def build_map(ipList, result):
 	''' Create map instance.
@@ -16,15 +16,26 @@ def build_map(ipList, result):
 		try:
 			ipresult = IP.objects.get(ip = ip)
 			countryName = ipresult.countryName
-			stateProv = ipresult.stateProv,
+			stateProv = ipresult.stateProv
 			city = ipresult.city
 
 		except Exception as e:
-			dbip = getIPLocation(ip)
-			countryName = dbip['countryName']
-			city = dbip['city']
-			stateProv = dbip['stateProv']
-			continentName = 'AAA'
+			ip_split = ip.split(".")
+			ip_split = int(ip_split[0])*(256*256*256) + int(ip_split[1])*(256*256) + int(ip_split[2])*256 + int(ip_split[3])
+			ipresult = Ip2location.objects.filter(ip_from__lte = ip_split).get(ip_to__gte=ip_split)
+			countryName = ipresult.countryName.split(",")[0]
+			city = ipresult.city
+
+			dbip = {}
+			dbip['ip'] = ip
+			dbip['countryName'] = countryName
+			dbip['city'] = city
+			dbip['stateProv'] = "unknown"
+			dbip['continentName'] = 'AAA'
+			ipObj, created = IP.objects.update_or_create(
+				ip = ip,
+				defaults = dbip
+			)
 
 		if countryName != "Taiwan":
 			continue
