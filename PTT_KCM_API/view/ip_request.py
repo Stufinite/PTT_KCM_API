@@ -22,7 +22,7 @@ def build_map(ipList, result):
 		except Exception as e:
 			ip_split = ip.split(".")
 			ip_split = int(ip_split[0])*(256*256*256) + int(ip_split[1])*(256*256) + int(ip_split[2])*256 + int(ip_split[3])
-			ipresult = Ip2location.objects.filter(ip_from__lte = ip_split).get(ip_to__gte=ip_split)
+			ipresult = Ip2location.objects.filter(ip_from__lte = ip_split, ip_to__gte=ip_split)[0]
 			countryName = ipresult.countryName.split(",")[0]
 			city = ipresult.city
 
