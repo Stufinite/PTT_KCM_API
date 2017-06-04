@@ -20,22 +20,9 @@ def build_map(ipList, result):
 			city = ipresult.city
 
 		except Exception as e:
-			ip_split = ip.split(".")
-			ip_split = int(ip_split[0])*(256*256*256) + int(ip_split[1])*(256*256) + int(ip_split[2])*256 + int(ip_split[3])
-			ipresult = Ip2location.objects.filter(ip_from__lte = ip_split).get(ip_to__gte=ip_split)
-			countryName = ipresult.countryName.split(",")[0]
-			city = ipresult.city
-
-			dbip = {}
-			dbip['ip'] = ip
-			dbip['countryName'] = countryName
-			dbip['city'] = city
-			dbip['stateProv'] = "unknown"
-			dbip['continentName'] = 'AAA'
-			ipObj, created = IP.objects.update_or_create(
-				ip = ip,
-				defaults = dbip
-			)
+			dbip = getIP2Location(ip)
+			countryName = dbip['countryName']
+			city = dbip['city']
 
 		if countryName != "Taiwan":
 			continue
@@ -53,6 +40,22 @@ def build_map(ipList, result):
 			result['map'][countryName][city]['negative'] += score
 		result['map'][countryName][city]['attendee'] += 1
 	return result
+def getIP2Location(ip):
+	ip_split = ip.split(".")
+	ip_split = int(ip_split[0])*(256*256*256) + int(ip_split[1])*(256*256) + int(ip_split[2])*256 + int(ip_split[3])
+	ipresult = Ip2location.objects.filter(ip_from__lte = ip_split).get(ip_to__gte=ip_split)
+
+	dbip = {}
+	dbip['ip'] = ip
+	dbip['countryName'] = ipresult.countryName.split(",")[0]
+	dbip['city'] = ipresult.city
+	dbip['stateProv'] = "unknown"
+	dbip['continentName'] = 'unknown'
+	ipObj, created = IP.objects.update_or_create(
+		ip = ip,
+		defaults = dbip
+	)
+	return dbip
 def getIPLocation(ip):
 	# sign in ip2location
 	userData = {

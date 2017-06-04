@@ -4,7 +4,7 @@ from PTT_KCM_API.models import IpTable, IP
 from PTT_KCM_API.dbip_apiKey import apiKey
 from pymongo import MongoClient
 from project.settings_database import uri
-from PTT_KCM_API.view.ip_request import getIPLocation
+from PTT_KCM_API.view.ip_request import getIP2Location
 
 class pttJson(object):
 	""" A pttJson object having api for web to query
@@ -95,16 +95,14 @@ class pttJson(object):
 
 		def Ip2City(ip):
 			import time, requests
-			dbip = getIPLocation(ip)
+			dbip = getIP2Location(ip)
 			ipDict = dict(
 				ip = ip,
 				countryName = dbip['countryName'],
 				stateProv = dbip['stateProv'],
 				city = dbip['city'],
-				continentName = 'AAA'
+				continentName = dbip['continentName']
 			)
-			time.sleep(3)
-			print("success!")
 			return ipDict
 	
 		for art in self.db['articles'].find().batch_size(30):
@@ -113,7 +111,7 @@ class pttJson(object):
 					ip_find = IP.objects.get(ip = art['ip'])
 				except Exception as e:
 					ip_find = None
-				if "error" not in art and art['ip'].find('.') != -1 and (ip_find == None or (ip_find.stateProv !="Taiwan Province" and ip_find.continentName != 'AAA')):
+				if "error" not in art and art['ip'].find('.') != -1 and ip_find == None:
 					userObj, created = IpTable.objects.get_or_create(
 						userID = getUserID(art['author']),
 						defaults={ 
