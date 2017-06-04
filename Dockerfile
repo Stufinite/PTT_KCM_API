@@ -12,8 +12,9 @@ MAINTAINER davidtnfsh davidtnfsh@gmail.com
 ENV LANG=C.UTF-8
 
 # 更新映像檔的指令
+RUN easy_install3 -U pip
 RUN git clone https://github.com/Stufinite/PTT_KCM_API.git
-RUN nohup entrypoint.sh mongod &
+RUN nohup ./entrypoint.sh mongod &
 WORKDIR PTT_KCM_API
 RUN pip3 install -r requirements.txt
 
