@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests
 import sys
 from bs4 import BeautifulSoup
@@ -24,6 +25,7 @@ def build_map(ipList, result):
 			countryName = dbip['countryName']
 			city = dbip['city']
 
+		# 只統計在台灣的IP
 		if countryName != "Taiwan":
 			continue
 		
@@ -42,7 +44,9 @@ def build_map(ipList, result):
 	return result
 def getIP2Location(ip):
 	ip_split = ip.split(".")
+	# IP2Location計算IP的方式,詳細https://www.ip2location.com/docs/db3-ip-country-region-city-specification.pdf
 	ip_split = int(ip_split[0])*(256*256*256) + int(ip_split[1])*(256*256) + int(ip_split[2])*256 + int(ip_split[3])
+	# 判斷此IP的所縣市
 	ipresult = Ip2location.objects.filter(ip_from__lte = ip_split).get(ip_to__gte=ip_split)
 
 	dbip = {}
@@ -51,47 +55,8 @@ def getIP2Location(ip):
 	dbip['city'] = ipresult.city
 	dbip['stateProv'] = "unknown"
 	dbip['continentName'] = 'unknown'
-	ipObj, created = IP.objects.update_or_create(
-		ip = ip,
-		defaults = dbip
-	)
-	return dbip
-def getIPLocation(ip):
-	# sign in ip2location
-	userData = {
-		'emailAddress':'j9963232q@gmail.com',
-		'password':'thisgame',
-		'btnLogin':'Login »',
-	}
-	rs = requests.session()
-	res = rs.post("https://www.ip2location.com/login",data = userData)
-
-	# get ip location info which we want
-	payload = {
-		'ipAddress': ip,
-		'btnLookup':'Search'
-	}
-	res2 = rs.post("https://www.ip2location.com/demo",data = payload)
-	soup = BeautifulSoup(res2.text)
-	with open('after_request_page.txt','w') as output:
-		output.write(res2.text)
-	dbip = {}
-	Ip = soup.select('tr')[0].text.encode(sys.stdin.encoding, "replace").decode(sys.stdin.encoding)
-	dbip['ip'] = Ip.split()[2]
-	Location = soup.select('tr')[1].text.encode(sys.stdin.encoding, "replace").decode(sys.stdin.encoding)
-	Location = Location.split(",")
-	if len(Location) == 3:
-		dbip['countryName'] = Location[0].split()[1]
-		dbip['stateProv'] = "unknown"
-		dbip['city'] = Location[2].replace(" ","",1)
-		dbip['city'] = dbip['city'].replace("\n","")
-	elif len(Location) == 4:
-		dbip['countryName'] = Location[0].split()[1]
-		dbip['stateProv'] = Location[1].replace(" ","",1)
-		dbip['city'] = Location[3].replace(" ","",1)
-		dbip['city'] = dbip['city'].replace("\n","")
-
-	dbip['city'] = dbip['city'].strip()
+	
+	# 將IP資訊存入mysql,下次遇到同一個IP就可直接讀取
 	ipObj, created = IP.objects.update_or_create(
 		ip = ip,
 		defaults = dbip

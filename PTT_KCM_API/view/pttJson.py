@@ -85,6 +85,8 @@ class pttJson(object):
 		if cursor.count() == 0:
 			return False
 		return True
+
+	# 反查每篇文章的ip位置
 	def build_IpTable(self):
 		def getUserID(IdStr):
 			index = IdStr.find('(')
@@ -107,10 +109,12 @@ class pttJson(object):
 	
 		for art in self.db['articles'].find().batch_size(30):
 			try:
+				# 判斷是否已存在mysql內
 				try:
 					ip_find = IP.objects.get(ip = art['ip'])
 				except Exception as e:
 					ip_find = None
+
 				if "error" not in art and art['ip'].find('.') != -1 and ip_find == None:
 					userObj, created = IpTable.objects.get_or_create(
 						userID = getUserID(art['author']),
@@ -125,6 +129,7 @@ class pttJson(object):
 						defaults = Ip2City(art['ip'])
 					)
 					userObj.ipList.add(ipObj)
+					
 			except Exception as e:
 				print(e)
 				print("error")
